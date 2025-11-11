@@ -158,29 +158,48 @@ public class ProductService {
         return this.cartRepository.findByUser(user);
     }
 
+    @Transactional
     public void handleRemoveCartDetail(long cartDetailId, HttpSession session) {
-        Optional<CartDetail> cartDetailOptional = this.cartDetailRepository.findById(cartDetailId);
-        if (cartDetailOptional.isPresent()) {
-            CartDetail cartDetail = cartDetailOptional.get();
+        // 1. load cartDetail trước
+        CartDetail cartDetail = cartDetailRepository.findById(cartDetailId)
+                .orElse(null);
+        if (cartDetail == null) {
+            return;
+        }
 
-            Cart currentCart = cartDetail.getCart();
-            // delete cart-detail
-            this.cartDetailRepository.deleteById(cartDetailId);
+        // 2. lấy cart đang chứa nó
+        Cart cart = cartDetail.getCart();
 
-            // update cart
-            if (currentCart.getSum() > 1) {
-                // update current cart
-                int s = currentCart.getSum() - 1;
-                currentCart.setSum(s);
-                session.setAttribute("sum", s);
-                this.cartRepository.save(currentCart);
+        // 3. gỡ cartDetail khỏi list trong cart (quan hệ 2 chiều)
+        if (cart != null && cart.getCartDetails() != null) {
+            cart.getCartDetails().remove(cartDetail);
+        }
+
+        // 4. xóa cartDetail
+        cartDetailRepository.delete(cartDetail);
+
+        // 5. cập nhật cart (sum)
+        if (cart != null) {
+            int currentSum = cart.getSum();   // mình giữ kiểu int như bạn
+            int newSum = currentSum - 1;
+
+            if (newSum > 0) {
+                cart.setSum(newSum);
+                cartRepository.save(cart);
+                session.setAttribute("sum", newSum);
             } else {
-                // delete cart (sum = 1)
-                this.cartRepository.deleteById(currentCart.getId());
+                // nếu hết item → gỡ cart khỏi user nếu bạn có quan hệ 1-1
+                if (cart.getUser() != null) {
+                    cart.getUser().setCart(null);
+                    // có repo user thì save user nữa sẽ càng chắc
+                    userRepository.save(cart.getUser());
+                }
+                cartRepository.delete(cart);
                 session.setAttribute("sum", 0);
             }
         }
     }
+
 
     public void handleUpdateCartBeforeCheckout(List<CartDetail> cartDetails) {
         for (CartDetail cartDetail : cartDetails) {
