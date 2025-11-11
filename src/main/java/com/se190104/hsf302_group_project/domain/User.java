@@ -27,7 +27,7 @@ public class User implements Serializable {
     private String password;
 
     @NotNull
-    @Size(min = 3, message = "Fullname phải có tối thiểu 3 ký tự")
+    @Size(min = 3, message = "Họ tên phải có tối thiểu 3 ký tự")
     private String fullName;
 
     private String address;

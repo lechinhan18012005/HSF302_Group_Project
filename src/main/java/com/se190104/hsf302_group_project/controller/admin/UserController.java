@@ -1,6 +1,7 @@
 package com.se190104.hsf302_group_project.controller.admin;
 
 import com.se190104.hsf302_group_project.domain.User;
+import com.se190104.hsf302_group_project.domain.dto.UserUpdateDTO;
 import com.se190104.hsf302_group_project.service.UploadService;
 import com.se190104.hsf302_group_project.service.UserService;
 import jakarta.validation.Valid;
@@ -78,7 +79,15 @@ public class UserController {
     public String createUserPage(Model model,
                                  @ModelAttribute("newUser") @Valid User user,
                                  BindingResult newUserBindingResult,
-                                 @RequestParam("hoidanitFile") MultipartFile file) {
+                                 @RequestParam("avatarFile") MultipartFile file) {
+
+        // Manual validation logic
+        validateUserInput(user.getFullName(), user.getPhone(), user.getAddress(), newUserBindingResult);
+
+        // Check for duplicate email
+        if (this.userService.checkEmailExist(user.getEmail())) {
+            newUserBindingResult.rejectValue("email", "email.exists", "Email đã tồn tại trong hệ thống");
+        }
 
         // validate
         if (newUserBindingResult.hasErrors()) {
@@ -100,19 +109,42 @@ public class UserController {
     @RequestMapping("/admin/user/update/{id}") // GET
     public String getUpdateUserPage(Model model, @PathVariable long id) {
         User currentUser = this.userService.getUserById(id);
-        model.addAttribute("newUser", currentUser);
+        if (currentUser == null) {
+            return "redirect:/admin/user";
+        }
+
+        UserUpdateDTO userUpdateDTO = new UserUpdateDTO(
+            currentUser.getId(),
+            currentUser.getFullName(),
+            currentUser.getAddress(),
+            currentUser.getPhone()
+        );
+
+        model.addAttribute("newUser", userUpdateDTO);
+        model.addAttribute("userEmail", currentUser.getEmail()); // For display purposes
         return "admin/user/update";
     }
 
     @PostMapping("/admin/user/update")
-    public String postUpdateUser(Model model, @ModelAttribute("newUser") User user) {
-        User currentUser = this.userService.getUserById(user.getId());
-        if (currentUser != null) {
-            currentUser.setAddress(user.getAddress());
-            currentUser.setFullName(user.getFullName());
-            currentUser.setPhone(user.getPhone());
+    public String postUpdateUser(Model model,
+                                @ModelAttribute("newUser") UserUpdateDTO userUpdateDTO,
+                                BindingResult bindingResult) {
 
-            // bug here
+        // Manual validation logic for update
+        validateUserInput(userUpdateDTO.getFullName(), userUpdateDTO.getPhone(), userUpdateDTO.getAddress(), bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            User currentUser = this.userService.getUserById(userUpdateDTO.getId());
+            model.addAttribute("userEmail", currentUser != null ? currentUser.getEmail() : "");
+            return "admin/user/update";
+        }
+
+        User currentUser = this.userService.getUserById(userUpdateDTO.getId());
+        if (currentUser != null) {
+            currentUser.setAddress(userUpdateDTO.getAddress());
+            currentUser.setFullName(userUpdateDTO.getFullName());
+            currentUser.setPhone(userUpdateDTO.getPhone());
+
             this.userService.handleSaveUser(currentUser);
         }
         return "redirect:/admin/user";
@@ -131,5 +163,27 @@ public class UserController {
     public String postDeleteUser(Model model, @ModelAttribute("newUser") User user) {
         this.userService.deleteAUser(user.getId());
         return "redirect:/admin/user";
+    }
+
+    // Helper methods for validation
+    private void validateUserInput(String fullName, String phone, String address, BindingResult bindingResult) {
+        // Validate full name
+        if (fullName == null || fullName.trim().isEmpty()) {
+            bindingResult.rejectValue("fullName", "fullName.empty", "Họ tên không được để trống");
+        } else if (fullName.trim().length() < 3) {
+            bindingResult.rejectValue("fullName", "fullName.short", "Họ tên phải có tối thiểu 3 ký tự");
+        }
+
+        // Validate phone
+        if (phone != null && !phone.trim().isEmpty()) {
+            if (!phone.matches("^0[0-9]{9}$")) {
+                bindingResult.rejectValue("phone", "phone.invalid", "Số điện thoại phải có 10 số và bắt đầu bằng số 0");
+            }
+        }
+
+        // Validate address
+        if (address != null && address.length() > 255) {
+            bindingResult.rejectValue("address", "address.tooLong", "Địa chỉ không được vượt quá 255 ký tự");
+        }
     }
 }
