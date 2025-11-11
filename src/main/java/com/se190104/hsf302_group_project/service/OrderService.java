@@ -12,7 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
+/**
+ * Service quản lý đơn hàng
+ * Xử lý các chức năng: xem, cập nhật, xóa đơn hàng
+ */
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
@@ -25,16 +28,26 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
+    /**
+     * Lấy danh sách tất cả đơn hàng với phân trang
+     */
     public Page<Order> fetchAllOrders(Pageable page) {
         return this.orderRepository.findAll(page);
     }
 
+    /**
+     * Lấy thông tin đơn hàng theo ID
+     */
     public Optional<Order> fetchOrderById(long id) {
         return this.orderRepository.findById(id);
     }
 
+    /**
+     * Xóa đơn hàng theo ID
+     * Xóa tất cả chi tiết đơn hàng trước khi xóa đơn hàng chính
+     */
     public void deleteOrderById(long id) {
-        // delete order detail
+        // Xóa chi tiết đơn hàng
         Optional<Order> orderOptional = this.fetchOrderById(id);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
@@ -44,9 +57,13 @@ public class OrderService {
             }
         }
 
+        // Xóa đơn hàng
         this.orderRepository.deleteById(id);
     }
 
+    /**
+     * Cập nhật trạng thái đơn hàng
+     */
     public void updateOrder(Order order) {
         Optional<Order> orderOptional = this.fetchOrderById(order.getId());
         if (orderOptional.isPresent()) {
@@ -56,6 +73,9 @@ public class OrderService {
         }
     }
 
+    /**
+     * Lấy danh sách đơn hàng theo người dùng
+     */
     public List<Order> fetchOrderByUser(User user) {
         return this.orderRepository.findByUser(user);
     }
