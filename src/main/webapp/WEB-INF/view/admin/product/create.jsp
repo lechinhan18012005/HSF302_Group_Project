@@ -179,9 +179,9 @@
                                     <label for="avatarFile" class="form-label">Image:</label>
                                     <%-- Input file với giới hạn định dạng ảnh --%>
                                     <%-- accept: Chỉ cho phép file ảnh png, jpg, jpeg --%>
-                                    <%-- name="hoidanitFile": Tên parameter để controller nhận file --%>
+                                    <%-- name="productImageFile": Tên parameter để controller nhận file --%>
                                     <input class="form-control" type="file" id="avatarFile"
-                                           accept=".png, .jpg, .jpeg" name="hoidanitFile"/>
+                                           accept=".png, .jpg, .jpeg" name="productImageFile"/>
                                 </div>
                                 <%-- Container cho ảnh preview --%>
                                 <div class="col-12 mb-3">

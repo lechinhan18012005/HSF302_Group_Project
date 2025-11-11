@@ -84,7 +84,7 @@ public class ProductController {
     public String handleCreateProduct(
             @ModelAttribute("newProduct") @Valid Product pr,
             BindingResult newProductBindingResult,
-            @RequestParam("hoidanitFile") MultipartFile file) {
+            @RequestParam("productImageFile") MultipartFile file) {
         // Kiểm tra lỗi validation
         if (newProductBindingResult.hasErrors()) {
             return "admin/product/create";
@@ -117,7 +117,7 @@ public class ProductController {
     @PostMapping("/admin/product/update")
     public String handleUpdateProduct(@ModelAttribute("newProduct") @Valid Product pr,
             BindingResult newProductBindingResult,
-            @RequestParam("hoidanitFile") MultipartFile file) {
+            @RequestParam(value = "productImageFile", required = false) MultipartFile file) {
 
         // Kiểm tra lỗi validation
         if (newProductBindingResult.hasErrors()) {
