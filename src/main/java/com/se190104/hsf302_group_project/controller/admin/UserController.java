@@ -1,6 +1,7 @@
 package com.se190104.hsf302_group_project.controller.admin;
 
 import com.se190104.hsf302_group_project.domain.User;
+import com.se190104.hsf302_group_project.domain.dto.UserUpdateDTO;
 import com.se190104.hsf302_group_project.service.UploadService;
 import com.se190104.hsf302_group_project.service.UserService;
 import jakarta.validation.Valid;
@@ -80,6 +81,11 @@ public class UserController {
                                  BindingResult newUserBindingResult,
                                  @RequestParam("hoidanitFile") MultipartFile file) {
 
+        // Check for duplicate email
+        if (this.userService.checkEmailExist(user.getEmail())) {
+            newUserBindingResult.rejectValue("email", "email.exists", "Email đã tồn tại trong hệ thống");
+        }
+
         // validate
         if (newUserBindingResult.hasErrors()) {
             return "admin/user/create";
@@ -100,19 +106,39 @@ public class UserController {
     @RequestMapping("/admin/user/update/{id}") // GET
     public String getUpdateUserPage(Model model, @PathVariable long id) {
         User currentUser = this.userService.getUserById(id);
-        model.addAttribute("newUser", currentUser);
+        if (currentUser == null) {
+            return "redirect:/admin/user";
+        }
+
+        UserUpdateDTO userUpdateDTO = new UserUpdateDTO(
+            currentUser.getId(),
+            currentUser.getFullName(),
+            currentUser.getAddress(),
+            currentUser.getPhone()
+        );
+
+        model.addAttribute("newUser", userUpdateDTO);
+        model.addAttribute("userEmail", currentUser.getEmail()); // For display purposes
         return "admin/user/update";
     }
 
     @PostMapping("/admin/user/update")
-    public String postUpdateUser(Model model, @ModelAttribute("newUser") User user) {
-        User currentUser = this.userService.getUserById(user.getId());
-        if (currentUser != null) {
-            currentUser.setAddress(user.getAddress());
-            currentUser.setFullName(user.getFullName());
-            currentUser.setPhone(user.getPhone());
+    public String postUpdateUser(Model model,
+                                @ModelAttribute("newUser") @Valid UserUpdateDTO userUpdateDTO,
+                                BindingResult bindingResult) {
 
-            // bug here
+        if (bindingResult.hasErrors()) {
+            User currentUser = this.userService.getUserById(userUpdateDTO.getId());
+            model.addAttribute("userEmail", currentUser != null ? currentUser.getEmail() : "");
+            return "admin/user/update";
+        }
+
+        User currentUser = this.userService.getUserById(userUpdateDTO.getId());
+        if (currentUser != null) {
+            currentUser.setAddress(userUpdateDTO.getAddress());
+            currentUser.setFullName(userUpdateDTO.getFullName());
+            currentUser.setPhone(userUpdateDTO.getPhone());
+
             this.userService.handleSaveUser(currentUser);
         }
         return "redirect:/admin/user";

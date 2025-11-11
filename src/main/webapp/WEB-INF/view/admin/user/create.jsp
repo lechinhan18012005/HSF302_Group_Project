@@ -65,8 +65,14 @@
 
                                 </div>
                                 <div class="mb-3 col-12 col-md-6">
+                                    <c:set var="errorPhone">
+                                        <form:errors path="phone" cssClass="invalid-feedback" />
+                                    </c:set>
                                     <label class="form-label">Phone number:</label>
-                                    <form:input type="text" class="form-control" path="phone" />
+                                    <form:input type="text"
+                                                class="form-control ${not empty errorPhone ? 'is-invalid' : ''}"
+                                                path="phone" placeholder="Ví dụ: 0123456789" />
+                                    ${errorPhone}
                                 </div>
                                 <div class="mb-3 col-12 col-md-6">
                                     <c:set var="errorFullName">
@@ -79,8 +85,14 @@
                                         ${errorFullName}
                                 </div>
                                 <div class="mb-3 col-12">
+                                    <c:set var="errorAddress">
+                                        <form:errors path="address" cssClass="invalid-feedback" />
+                                    </c:set>
                                     <label class="form-label">Address:</label>
-                                    <form:input type="text" class="form-control" path="address" />
+                                    <form:input type="text"
+                                                class="form-control ${not empty errorAddress ? 'is-invalid' : ''}"
+                                                path="address" />
+                                    ${errorAddress}
                                 </div>
 
                                 <div class="mb-3 col-12 col-md-6">

@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "users")
@@ -18,19 +20,25 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
+    @NotNull(message = "Email không được để trống")
+    @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không hợp lệ", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
 
-    @NotNull
-    @Size(min = 2, message = "Password phải có tối thiểu 2 ký tự")
+    @NotNull(message = "Mật khẩu không được để trống")
+    @NotBlank(message = "Mật khẩu không được để trống")
+    @Size(min = 6, message = "Mật khẩu phải có tối thiểu 6 ký tự")
     private String password;
 
-    @NotNull
-    @Size(min = 3, message = "Fullname phải có tối thiểu 3 ký tự")
+    @NotNull(message = "Họ tên không được để trống")
+    @NotBlank(message = "Họ tên không được để trống")
+    @Size(min = 3, message = "Họ tên phải có tối thiểu 3 ký tự")
     private String fullName;
 
+    @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự")
     private String address;
+
+    @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải có 10 số và bắt đầu bằng số 0")
     private String phone;
 
     private String avatar;
