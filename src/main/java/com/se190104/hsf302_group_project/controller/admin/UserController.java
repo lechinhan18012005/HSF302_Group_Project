@@ -79,7 +79,7 @@ public class UserController {
     public String createUserPage(Model model,
                                  @ModelAttribute("newUser") @Valid User user,
                                  BindingResult newUserBindingResult,
-                                 @RequestParam("hoidanitFile") MultipartFile file) {
+                                 @RequestParam("avatarFile") MultipartFile file) {
 
         // Manual validation logic
         validateUserInput(user.getFullName(), user.getPhone(), user.getAddress(), newUserBindingResult);
