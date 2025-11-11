@@ -1,17 +1,16 @@
 package com.se190104.hsf302_group_project.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.se190104.hsf302_group_project.domain.Order;
+import com.se190104.hsf302_group_project.domain.OrderDetail;
+import com.se190104.hsf302_group_project.domain.User;
+import com.se190104.hsf302_group_project.repository.OrderDetailRepository;
+import com.se190104.hsf302_group_project.repository.OrderRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.hsf.laptopshop.domain.Order;
-import com.hsf.laptopshop.domain.OrderDetail;
-import com.hsf.laptopshop.domain.User;
-import com.hsf.laptopshop.repository.OrderDetailRepository;
-import com.hsf.laptopshop.repository.OrderRepository;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
