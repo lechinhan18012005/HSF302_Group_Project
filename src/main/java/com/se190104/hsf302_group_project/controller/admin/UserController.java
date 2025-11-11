@@ -121,9 +121,9 @@ public class UserController {
     @GetMapping("/admin/user/delete/{id}")
     public String getDeleteUserPage(Model model, @PathVariable long id) {
         model.addAttribute("id", id);
-        // User user = new User();
-        // user.setId(id);
-        model.addAttribute("newUser", new User());
+         User user = new User();
+         user.setId(id);
+        model.addAttribute("newUser", user);
         return "admin/user/delete";
     }
 

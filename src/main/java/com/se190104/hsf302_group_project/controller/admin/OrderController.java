@@ -32,10 +32,11 @@ public class OrderController {
                 // convert from String to int
                 page = Integer.parseInt(pageOptional.get());
             } else {
-                // page = 1
+                 page = 1;
             }
         } catch (Exception e) {
-            // page = 1
+             page = 1;
+             e.printStackTrace();
             // TODO: handle exception
         }
 
