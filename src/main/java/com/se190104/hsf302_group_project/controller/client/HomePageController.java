@@ -35,9 +35,8 @@ public class HomePageController {
 
     @GetMapping("/")
     public String getHomePage(Model model) {
-        // List<Product> products = this.productService.fetchProducts();
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Product> prs = this.productService.fetchProducts(pageable);
+        Page<Product> prs = productService.fetchProducts(pageable);
         List<Product> products = prs.getContent();
 
         model.addAttribute("products", products);
@@ -60,14 +59,14 @@ public class HomePageController {
             return "client/auth/register";
         }
 
-        User user = this.userService.registerDTOtoUser(registerDTO);
+        User user = userService.registerDTOtoUser(registerDTO);
 
-        String hashPassword = this.passwordEncoder.encode(user.getPassword());
+        String hashPassword = passwordEncoder.encode(user.getPassword());
 
         user.setPassword(hashPassword);
-        user.setRole(this.userService.getRoleByName("USER"));
+        user.setRole(userService.getRoleByName("USER"));
         // save
-        this.userService.handleSaveUser(user);
+        userService.handleSaveUser(user);
         return "redirect:/login";
     }
 
@@ -90,7 +89,7 @@ public class HomePageController {
         long id = (long) session.getAttribute("id");
         currentUser.setId(id);
 
-        List<Order> orders = this.orderService.fetchOrderByUser(currentUser);
+        List<Order> orders = orderService.fetchOrderByUser(currentUser);
         model.addAttribute("orders", orders);
 
         return "client/cart/order-history";

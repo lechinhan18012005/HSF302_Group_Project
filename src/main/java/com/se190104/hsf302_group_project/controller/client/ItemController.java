@@ -114,18 +114,22 @@ public class ItemController {
     @PostMapping("/place-order")
     public String handlePlaceOrder(
             HttpServletRequest request,
-            @RequestParam("receiverName") String receiverName,
-            @RequestParam("receiverAddress") String receiverAddress,
-            @RequestParam("receiverPhone") String receiverPhone) {
-        User currentUser = new User();// null
-        HttpSession session = request.getSession(false);
-        long id = (long) session.getAttribute("id");
-        currentUser.setId(id);
+            @RequestParam String receiverName,
+            @RequestParam String receiverAddress,
+            @RequestParam String receiverPhone) {
 
-        this.productService.handlePlaceOrder(currentUser, session, receiverName, receiverAddress, receiverPhone);
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("id") == null) {
+            return "redirect:/login"; // hoặc xử lý phù hợp
+        }
+
+        Long userId = (Long) session.getAttribute("id");
+
+        productService.handlePlaceOrder(userId, session, receiverName, receiverAddress, receiverPhone);
 
         return "redirect:/thanks";
     }
+
 
     @GetMapping("/thanks")
     public String getThankYouPage(Model model) {

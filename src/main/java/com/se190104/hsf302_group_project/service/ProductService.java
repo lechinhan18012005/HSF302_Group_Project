@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class ProductService {
     private final UserService userService;
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final UserRepository userRepository;
 
     public Product createProduct(Product pr) {
         return this.productRepository.save(pr);
@@ -191,55 +193,65 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public void handlePlaceOrder(
-            User user, HttpSession session,
+            Long userId, HttpSession session,
             String receiverName, String receiverAddress, String receiverPhone) {
 
-        // step 1: get cart by user
-        Cart cart = this.cartRepository.findByUser(user);
-        if (cart != null) {
-            List<CartDetail> cartDetails = cart.getCartDetails();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-            if (cartDetails != null) {
-
-                // create order
-                Order order = new Order();
-                order.setUser(user);
-                order.setReceiverName(receiverName);
-                order.setReceiverAddress(receiverAddress);
-                order.setReceiverPhone(receiverPhone);
-                order.setStatus("PENDING");
-
-                double sum = 0;
-                for (CartDetail cd : cartDetails) {
-                    sum += cd.getPrice();
-                }
-                order.setTotalPrice(sum);
-                order = this.orderRepository.save(order);
-
-                // create orderDetail
-
-                for (CartDetail cd : cartDetails) {
-                    OrderDetail orderDetail = new OrderDetail();
-                    orderDetail.setOrder(order);
-                    orderDetail.setProduct(cd.getProduct());
-                    orderDetail.setPrice(cd.getPrice());
-                    orderDetail.setQuantity(cd.getQuantity());
-
-                    this.orderDetailRepository.save(orderDetail);
-                }
-
-                // step 2: delete cart_detail and cart
-                for (CartDetail cd : cartDetails) {
-                    this.cartDetailRepository.deleteById(cd.getId());
-                }
-
-                this.cartRepository.deleteById(cart.getId());
-
-                // step 3 : update session
-                session.setAttribute("sum", 0);
-            }
+        Cart cart = cartRepository.findByUser(user);
+        if (cart == null) {
+            return;
         }
 
+        List<CartDetail> cartDetails = cart.getCartDetails();
+        if (cartDetails == null || cartDetails.isEmpty()) {
+            return;
+        }
+
+        // 1) tạo order
+        Order order = new Order();
+        order.setUser(user);
+        order.setReceiverName(receiverName);
+        order.setReceiverAddress(receiverAddress);
+        order.setReceiverPhone(receiverPhone);
+        order.setStatus("PENDING");
+
+        double sum = 0;
+        for (CartDetail cd : cartDetails) {
+            sum += cd.getPrice();
+        }
+        order.setTotalPrice(sum);
+        order = orderRepository.save(order);
+
+        // 2) tạo order detail
+        for (CartDetail cd : cartDetails) {
+            OrderDetail od = new OrderDetail();
+            od.setOrder(order);
+            od.setProduct(cd.getProduct());
+            od.setPrice(cd.getPrice());
+            od.setQuantity(cd.getQuantity());
+            orderDetailRepository.save(od);
+        }
+
+        // 3) xóa chi tiết giỏ
+        cartDetailRepository.deleteAll(cartDetails);
+
+        //ngắt quan hệ trên phía user (hoặc phía cart, tùy bạn map bên nào)
+        // nếu User có field private Cart cart;
+        user.setCart(null);
+        userRepository.save(user); // để Hibernate biết user không còn giữ cart nữa
+
+        // 4) xóa cart
+        cartRepository.delete(cart);
+
+        // 5) cập nhật session
+        session.setAttribute("sum", 0);
     }
+
+
+
+
 }
