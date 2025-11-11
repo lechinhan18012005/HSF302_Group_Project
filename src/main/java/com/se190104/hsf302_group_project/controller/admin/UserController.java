@@ -81,6 +81,9 @@ public class UserController {
                                  BindingResult newUserBindingResult,
                                  @RequestParam("hoidanitFile") MultipartFile file) {
 
+        // Manual validation logic
+        validateUserInput(user.getFullName(), user.getPhone(), user.getAddress(), newUserBindingResult);
+
         // Check for duplicate email
         if (this.userService.checkEmailExist(user.getEmail())) {
             newUserBindingResult.rejectValue("email", "email.exists", "Email đã tồn tại trong hệ thống");
@@ -124,8 +127,11 @@ public class UserController {
 
     @PostMapping("/admin/user/update")
     public String postUpdateUser(Model model,
-                                @ModelAttribute("newUser") @Valid UserUpdateDTO userUpdateDTO,
+                                @ModelAttribute("newUser") UserUpdateDTO userUpdateDTO,
                                 BindingResult bindingResult) {
+
+        // Manual validation logic for update
+        validateUserInput(userUpdateDTO.getFullName(), userUpdateDTO.getPhone(), userUpdateDTO.getAddress(), bindingResult);
 
         if (bindingResult.hasErrors()) {
             User currentUser = this.userService.getUserById(userUpdateDTO.getId());
@@ -157,5 +163,27 @@ public class UserController {
     public String postDeleteUser(Model model, @ModelAttribute("newUser") User user) {
         this.userService.deleteAUser(user.getId());
         return "redirect:/admin/user";
+    }
+
+    // Helper methods for validation
+    private void validateUserInput(String fullName, String phone, String address, BindingResult bindingResult) {
+        // Validate full name
+        if (fullName == null || fullName.trim().isEmpty()) {
+            bindingResult.rejectValue("fullName", "fullName.empty", "Họ tên không được để trống");
+        } else if (fullName.trim().length() < 3) {
+            bindingResult.rejectValue("fullName", "fullName.short", "Họ tên phải có tối thiểu 3 ký tự");
+        }
+
+        // Validate phone
+        if (phone != null && !phone.trim().isEmpty()) {
+            if (!phone.matches("^0[0-9]{9}$")) {
+                bindingResult.rejectValue("phone", "phone.invalid", "Số điện thoại phải có 10 số và bắt đầu bằng số 0");
+            }
+        }
+
+        // Validate address
+        if (address != null && address.length() > 255) {
+            bindingResult.rejectValue("address", "address.tooLong", "Địa chỉ không được vượt quá 255 ký tự");
+        }
     }
 }
