@@ -1,6 +1,7 @@
 package com.se190104.hsf302_group_project.service;
 
 import jakarta.servlet.ServletContext;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,10 +40,11 @@ public class UploadService {
             File serverFile = new File(dir.getAbsolutePath() + File.separator + finalName);
             // uuid
 
-            BufferedOutputStream stream = new BufferedOutputStream(
-                    new FileOutputStream(serverFile));
-            stream.write(bytes);
-            stream.close();
+            Thumbnails.of(file.getInputStream())
+                    .size(500, 350)     // ép về đúng 500x350
+                    .keepAspectRatio(false) // bắt buộc đúng tỷ lệ, không giữ tỉ lệ gốc
+                    .outputFormat("jpg")    // tùy chọn, có thể dùng "png"
+                    .toFile(serverFile);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
