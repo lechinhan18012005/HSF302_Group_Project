@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Update Order</title>
+
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body class="sb-nav-fixed">
+<!-- Header -->
+<div th:replace="~{admin/layout/header :: header}"></div>
+
+<div id="layoutSidenav">
+    <!-- Sidebar -->
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Orders</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/order}">Order</a></li>
+                    <li class="breadcrumb-item active">Update</li>
+                </ol>
+
+                <div class="mt-5">
+                    <div class="row">
+                        <div class="col-md-6 col-12 mx-auto">
+                            <h3>Update an order</h3>
+                            <hr />
+
+                            <!-- Form cập nhật -->
+                            <form th:action="@{/admin/order/update}" th:object="${newOrder}" method="post" class="row">
+                                <!-- Hidden ID -->
+                                <div class="mb-3" style="display:none;">
+                                    <label class="form-label">Id:</label>
+                                    <input type="text" class="form-control" th:field="*{id}" />
+                                </div>
+
+                                <!-- Hiển thị thông tin đơn -->
+                                <div class="mb-3">
+                                    <label>Order ID = <span th:text="*{id}">1</span></label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <label class="form-label">
+                                        Price:
+                                        <span th:text="${#numbers.formatDecimal(newOrder.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                                0 đ
+                                            </span>
+                                    </label>
+                                </div>
+
+                                <!-- User -->
+                                <div class="mb-3 col-12 col-md-6">
+                                    <label class="form-label">User:</label>
+                                    <input type="text" class="form-control" th:field="*{user.fullName}" disabled />
+                                </div>
+
+                                <!-- Status -->
+                                <div class="mb-3 col-12 col-md-6">
+                                    <label class="form-label">Status:</label>
+                                    <select class="form-select" th:field="*{status}">
+                                        <option value="PENDING">PENDING</option>
+                                        <option value="SHIPPING">SHIPPING</option>
+                                        <option value="COMPLETE">COMPLETE</option>
+                                        <option value="CANCEL">CANCEL</option>
+                                    </select>
+                                </div>
+
+                                <!-- Submit -->
+                                <div class="col-12 mb-5">
+                                    <button type="submit" class="btn btn-warning">Update</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <div th:replace="~{admin/layout/footer :: footer}"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+
+</html>

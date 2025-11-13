@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Sản Phẩm - Laptopshop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link th:href="@{https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap}" rel="stylesheet">
+
+    <!-- Icon Fonts -->
+    <link th:href="@{https://use.fontawesome.com/releases/v5.15.4/css/all.css}" rel="stylesheet" />
+    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css}" rel="stylesheet" />
+
+    <!-- Libraries -->
+    <link th:href="@{/client/lib/lightbox/css/lightbox.min.css}" rel="stylesheet">
+    <link th:href="@{/client/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+
+    <!-- Bootstrap & Custom -->
+    <link th:href="@{/client/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/client/css/style.css}" rel="stylesheet">
+
+    <style>
+
+        /* ====== SIDEBAR FILTER ====== */
+        .filter-sidebar {
+            padding: 25px 25px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            background: #fff;
+            width: 100%;
+        }
+
+        .filter-sidebar .filter-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        /* Spacing giữa các group */
+        .filter-group {
+            margin-bottom: 25px;
+        }
+
+        /* Checkbox đẹp hơn */
+        .form-check-inline {
+            margin-right: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* Nút filter giống giao diện cũ */
+        #btnFilter {
+            width: 180px;
+            border-radius: 50px;
+            font-weight: 600;
+            border: 2px solid #ffb800;
+            color: #52b029 !important;
+            background: #fff;
+        }
+
+        #btnFilter:hover {
+            background: #ffb800;
+            color: #fff !important;
+        }
+
+        /* Khoảng cách giữa filter và danh sách */
+        .products-wrapper {
+            padding-left: 40px;
+        }
+
+    </style>
+</head>
+
+<body>
+<!-- Spinner -->
+<div id="spinner"
+     class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-primary" role="status"></div>
+</div>
+
+<!-- Header -->
+<div th:replace="~{client/layout/header :: header}"></div>
+
+<!-- Products Page -->
+<div class="container-fluid py-5 mt-5">
+    <div class="container py-5">
+
+        <!-- Breadcrumb -->
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Danh Sách Sản Phẩm</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="row g-4 fruite">
+            <!-- Filter Sidebar -->
+            <div class="col-12 col-md-4">
+                <div class="filter-sidebar">
+
+                    <!-- Hãng sản xuất -->
+                    <div class="filter-group" id="factoryFilter">
+                        <div class="filter-title">Hãng sản xuất</div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="factory-1" value="APPLE">
+                            <label class="form-check-label" for="factory-1">Apple</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="factory-2" value="ASUS">
+                            <label class="form-check-label" for="factory-2">Asus</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="factory-3" value="LENOVO">
+                            <label class="form-check-label" for="factory-3">Lenovo</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="factory-4" value="DELL">
+                            <label class="form-check-label" for="factory-4">Dell</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="factory-5" value="LG">
+                            <label class="form-check-label" for="factory-5">LG</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="factory-6" value="ACER">
+                            <label class="form-check-label" for="factory-6">Acer</label>
+                        </div>
+                    </div>
+
+                    <!-- Mục đích sử dụng -->
+                    <div class="filter-group" id="targetFilter">
+                        <div class="filter-title">Mục đích sử dụng</div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="target-1" value="GAMING">
+                            <label class="form-check-label" for="target-1">Gaming</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="target-2" value="SINHVIEN-VANPHONG">
+                            <label class="form-check-label" for="target-2">Sinh viên - văn phòng</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="target-3" value="THIET-KE-DO-HOA">
+                            <label class="form-check-label" for="target-3">Thiết kế đồ họa</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="target-4" value="MONG-NHE">
+                            <label class="form-check-label" for="target-4">Mỏng nhẹ</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="target-5" value="DOANH-NHAN">
+                            <label class="form-check-label" for="target-5">Doanh nhân</label>
+                        </div>
+                    </div>
+
+                    <!-- Mức giá -->
+                    <div class="filter-group" id="priceFilter">
+                        <div class="filter-title">Mức giá</div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="price-1" value="duoi-10-trieu">
+                            <label class="form-check-label" for="price-1">Dưới 10 triệu</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="price-2" value="10-15-trieu">
+                            <label class="form-check-label" for="price-2">Từ 10–15 triệu</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="price-3" value="15-20-trieu">
+                            <label class="form-check-label" for="price-3">Từ 15–20 triệu</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="price-4" value="tren-20-trieu">
+                            <label class="form-check-label" for="price-4">Trên 20 triệu</label>
+                        </div>
+                    </div>
+
+                    <!-- Sắp xếp -->
+                    <div class="filter-group">
+                        <div class="filter-title">Sắp xếp</div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radio-sort" id="sort-1" value="gia-tang-dan">
+                            <label class="form-check-label" for="sort-1">Giá tăng dần</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radio-sort" id="sort-2" value="gia-giam-dan">
+                            <label class="form-check-label" for="sort-2">Giá giảm dần</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radio-sort" id="sort-3" value="gia-nothing" checked>
+                            <label class="form-check-label" for="sort-3">Không sắp xếp</label>
+                        </div>
+                    </div>
+
+                    <!-- Button -->
+                    <div class="col-12">
+                        <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4"
+                                id="btnFilter">
+                            Lọc Sản Phẩm
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Product list -->
+            <div class="col-12 col-md-8 text-center">
+                <div class="row g-4">
+
+                    <!-- Nếu không có sản phẩm -->
+                    <div th:if="${totalPages == 0}">
+                        Không tìm thấy sản phẩm
+                    </div>
+
+                    <!-- Danh sách sản phẩm -->
+                    <div class="col-md-6 col-lg-4" th:each="product : ${products}">
+                        <div class="rounded position-relative fruite-item">
+                            <div class="fruite-img">
+                                <img th:src="@{/images/product/{img}(img=${product.image})}"
+                                     class="img-fluid w-100 rounded-top" alt="Sản phẩm">
+                            </div>
+
+                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                 style="top: 10px; left: 10px;">Laptop</div>
+
+                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                <h4 style="font-size: 15px;">
+                                    <a th:href="@{/product/{id}(id=${product.id})}"
+                                       th:text="${product.name}">Tên sản phẩm</a>
+                                </h4>
+
+                                <p style="font-size: 13px;" th:text="${product.shortDesc}">Mô tả ngắn</p>
+
+                                <div class="d-flex flex-lg-wrap justify-content-center flex-column">
+                                    <p style="font-size: 15px; text-align: center; width: 100%;"
+                                       class="text-dark fw-bold mb-3"
+                                       th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                        Giá
+                                    </p>
+
+                                    <form th:action="@{/add-product-to-cart/{id}(id=${product.id})}" method="post">
+                                        <input type="hidden" th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}" />
+                                        <button class="mx-auto btn border border-secondary rounded-pill px-3 text-primary">
+                                            <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                                            Add to cart
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div th:if="${totalPages > 0}" class="pagination d-flex justify-content-center mt-5">
+                        <!-- Previous -->
+                        <li class="page-item">
+                            <a class="page-link" th:classappend="${currentPage == 1} ? ' disabled'"
+                               th:href="@{/products(page=${currentPage - 1}, query=${queryString})}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <!-- Page numbers -->
+                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}">
+                            <a class="page-link"
+                               th:classappend="${pageNum == currentPage} ? ' active'"
+                               th:href="@{/products(page=${pageNum}, query=${queryString})}"
+                               th:text="${pageNum}">1</a>
+                        </li>
+
+                        <!-- Next -->
+                        <li class="page-item">
+                            <a class="page-link" th:classappend="${currentPage == totalPages} ? ' disabled'"
+                               th:href="@{/products(page=${currentPage + 1}, query=${queryString})}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{client/layout/footer :: footer}"></div>
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top">
+    <i class="fa fa-arrow-up"></i>
+</a>
+
+<!-- JS -->
+<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>
+<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/client/lib/easing/easing.min.js}"></script>
+<script th:src="@{/client/lib/waypoints/waypoints.min.js}"></script>
+<script th:src="@{/client/lib/lightbox/js/lightbox.min.js}"></script>
+<script th:src="@{/client/lib/owlcarousel/owl.carousel.min.js}"></script>
+<script th:src="@{/client/js/main.js}"></script>
+</body>
+</html>
