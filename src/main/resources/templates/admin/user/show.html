@@ -39,6 +39,11 @@
 
                             <hr/>
 
+                            <!-- Thông báo lỗi khi xóa user còn tham chiếu đến orders-->
+                            <div th:if="${fail}" th:text="${fail}" style="color: red; font-weight: bold"> </div>
+                            <!-- Thông báo xóa thành công -->
+                            <div th:if="${success}" th:text="${success}" style="color: green; font-weight: bold"> </div>
+
                             <!-- Table -->
                             <table class="table table-bordered table-hover">
                                 <thead>
@@ -51,11 +56,11 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="user : ${users1}">
-                                    <td th:text="${user.id}">1</td>
-                                    <td th:text="${user.email}">email@example.com</td>
-                                    <td th:text="${user.fullName}">John Doe</td>
-                                    <td th:text="${user.role.name}">ADMIN</td>
+                                <tr th:each="user : ${users}">
+                                    <td th:text="${user.id}"></td>
+                                    <td th:text="${user.email}"></td>
+                                    <td th:text="${user.fullName}"></td>
+                                    <td th:text="${user.role.name}"></td>
                                     <td>
                                         <a th:href="@{'/admin/user/' + ${user.id}}" class="btn btn-success">View</a>
                                         <a th:href="@{'/admin/user/update/' + ${user.id}}" class="btn btn-warning mx-2">Update</a>

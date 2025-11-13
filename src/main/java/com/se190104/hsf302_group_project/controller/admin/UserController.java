@@ -2,6 +2,7 @@ package com.se190104.hsf302_group_project.controller.admin;
 
 import com.se190104.hsf302_group_project.domain.User;
 import com.se190104.hsf302_group_project.domain.dto.UserUpdateDTO;
+import com.se190104.hsf302_group_project.service.OrderService;
 import com.se190104.hsf302_group_project.service.UploadService;
 import com.se190104.hsf302_group_project.service.UserService;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,15 +26,7 @@ public class UserController {
     private final UserService userService;
     private final UploadService uploadService;
     private final PasswordEncoder passwordEncoder;
-
-//    public UserController(
-//            UploadService uploadService,
-//            UserService userService,
-//            PasswordEncoder passwordEncoder) {
-//        this.userService = userService;
-//        this.uploadService = uploadService;
-//        this.passwordEncoder = passwordEncoder;
-//    }
+    private final OrderService orderService;
 
     @GetMapping("/admin/user")
     public String getUserPage(
@@ -52,7 +46,7 @@ public class UserController {
         Pageable pageable = PageRequest.of(page - 1, size, sortSpec);
         Page<User> usersPage = userService.getAllUsers(pageable);
 
-        model.addAttribute("users1", usersPage.getContent());
+        model.addAttribute("users", usersPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", usersPage.getTotalPages());
         model.addAttribute("size", size);
@@ -153,15 +147,19 @@ public class UserController {
     @GetMapping("/admin/user/delete/{id}")
     public String getDeleteUserPage(Model model, @PathVariable long id) {
         model.addAttribute("id", id);
-         User user = new User();
-         user.setId(id);
-        model.addAttribute("newUser", user);
+        //check coi user này có đơn hàng nào ko trc khi xóa nếu có thì không có xóa
         return "admin/user/delete";
     }
 
     @PostMapping("/admin/user/delete")
-    public String postDeleteUser(Model model, @ModelAttribute("newUser") User user) {
-        this.userService.deleteAUser(user.getId());
+    public String postDeleteUser(RedirectAttributes box, @RequestParam("id") long id) {
+        boolean isOrders = orderService.hasOrder(id);
+        if(isOrders) {
+            box.addFlashAttribute("fail", "This user has orders in the System that cannot be deleted");
+            return "redirect:/admin/user";
+        }
+        box.addFlashAttribute("success", "This user has been successfully deleted");
+        userService.deleteAUser(id);
         return "redirect:/admin/user";
     }
 

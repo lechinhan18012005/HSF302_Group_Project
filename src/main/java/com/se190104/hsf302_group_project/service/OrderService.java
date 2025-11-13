@@ -8,6 +8,7 @@ import com.se190104.hsf302_group_project.domain.OrderDetail;
 import com.se190104.hsf302_group_project.domain.User;
 import com.se190104.hsf302_group_project.repository.OrderDetailRepository;
 import com.se190104.hsf302_group_project.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,13 @@ import org.springframework.stereotype.Service;
  * Xử lý các chức năng: xem, cập nhật, xóa đơn hàng
  */
 @Service
+@RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
 
-    public OrderService(
-            OrderRepository orderRepository,
-            OrderDetailRepository orderDetailRepository) {
-        this.orderDetailRepository = orderDetailRepository;
-        this.orderRepository = orderRepository;
+    public boolean hasOrder(long userId) {
+        return orderRepository.existsByUserId(userId);
     }
 
     /**
