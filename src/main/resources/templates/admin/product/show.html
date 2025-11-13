@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title>Dashboard</title>
+
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="sb-nav-fixed">
+<!-- Header -->
+<div th:replace="~{admin/layout/header :: header}"></div>
+
+<div id="layoutSidenav">
+    <!-- Sidebar -->
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+
+    <!-- Content -->
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Manage Products</h1>
+
+                <!-- Breadcrumb -->
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Product</li>
+                </ol>
+
+                <div class="mt-5">
+                    <div class="row">
+                        <div class="col-12 mx-auto">
+                            <div class="d-flex justify-content-between">
+                                <h3>Table products</h3>
+                                <a th:href="@{/admin/product/create}" class="btn btn-primary">Create a product</a>
+                            </div>
+
+                            <hr/>
+
+                            <!-- Products table -->
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Factory</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="product : ${products}">
+                                    <th th:text="${product.id}">1</th>
+                                    <td th:text="${product.name}">Sample name</td>
+                                    <td>
+                                        <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"></span>
+                                        <span> đ</span>
+                                    </td>
+                                    <td th:text="${product.factory}">APPLE</td>
+                                    <td>
+                                        <a th:href="@{|/admin/product/${product.id}|}" class="btn btn-success">View</a>
+                                        <a th:href="@{|/admin/product/update/${product.id}|}" class="btn btn-warning mx-2">Update</a>
+                                        <a th:href="@{|/admin/product/delete/${product.id}|}" class="btn btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Pagination -->
+                            <nav aria-label="Page navigation example" th:if="${totalPages > 0}">
+                                <ul class="pagination justify-content-center">
+                                    <!-- Prev -->
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           th:classappend="${currentPage == 1} ? ' disabled' : ''"
+                                           th:href="@{|/admin/product?page=${currentPage - 1}|}"
+                                           aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+
+                                    <!-- Pages -->
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}">
+                                        <a class="page-link"
+                                           th:classappend="${i == currentPage} ? ' active' : ''"
+                                           th:href="@{|/admin/product?page=${i}|}"
+                                           th:text="${i}">1</a>
+                                    </li>
+
+                                    <!-- Next -->
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           th:classappend="${currentPage == totalPages} ? ' disabled' : ''"
+                                           th:href="@{|/admin/product?page=${currentPage + 1}|}"
+                                           aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <div th:replace="~{admin/layout/footer :: footer}"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
