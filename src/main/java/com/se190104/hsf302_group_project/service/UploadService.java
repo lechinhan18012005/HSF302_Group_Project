@@ -25,7 +25,7 @@ public class UploadService {
         if (file.isEmpty())
             return "";
         // relative path: absolute path
-        String rootPath = this.servletContext.getRealPath("/resources/images");
+        String rootPath = this.servletContext.getRealPath("/resources/static/images");
         String finalName = "";
         try {
             byte[] bytes = file.getBytes();

@@ -11,4 +11,6 @@ import com.se190104.hsf302_group_project.domain.User;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUser(User user);
+
+    boolean existsByUserId(long userId);
 }

@@ -42,12 +42,12 @@
                             </div>
 
                             <!-- Th:object để bind với model 'newProduct' -->
-                            <form th:action="@{/admin/product/delete}" th:object="${newProduct}" method="post">
+                            <form th:action="@{/admin/product/delete}" method="post">
                                 <!-- CSRF (nếu bạn bật Spring Security CSRF) -->
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                                 <!-- Hidden Id -->
-                                <input type="hidden" th:field="*{id}" th:value="${id}"/>
+                                <input type="hidden" name="id" th:value="${id}"/>
 
                                 <button class="btn btn-danger">Confirm</button>
                             </form>

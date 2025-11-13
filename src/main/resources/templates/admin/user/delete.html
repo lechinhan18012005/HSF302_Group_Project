@@ -39,13 +39,12 @@
                                 Are you sure to delete this user ?
                             </div>
 
-                            <form th:action="@{/admin/user/delete}" th:object="${newUser}" method="post">
+                            <form th:action="@{/admin/user/delete}"  method="post">
                                 <!-- Hidden Id -->
                                 <div class="mb-3" style="display:none;">
                                     <label class="form-label">Id:</label>
-                                    <input type="text" th:field="*{id}" class="form-control" th:value="${id}"/>
+                                    <input type="text" class="form-control" name="id" th:value="${id}"/>
                                 </div>
-
                                 <button class="btn btn-danger" type="submit">Confirm</button>
                             </form>
                         </div>

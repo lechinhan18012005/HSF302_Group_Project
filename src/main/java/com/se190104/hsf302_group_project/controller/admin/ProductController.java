@@ -154,7 +154,6 @@ public class ProductController {
     @GetMapping("/admin/product/delete/{id}")
     public String getDeleteProductPage(Model model, @PathVariable long id) {
         model.addAttribute("id", id);
-        model.addAttribute("newProduct", new Product());
         return "admin/product/delete";
     }
 
@@ -162,8 +161,8 @@ public class ProductController {
      * Xử lý xóa sản phẩm từ database
      */
     @PostMapping("/admin/product/delete")
-    public String postDeleteProduct(Model model, @ModelAttribute("newProduct") Product pr) {
-        this.productService.deleteProduct(pr.getId());
+    public String postDeleteProduct(Model model, @RequestParam long id) {
+        this.productService.deleteProduct(id);
         return "redirect:/admin/product";
     }
 

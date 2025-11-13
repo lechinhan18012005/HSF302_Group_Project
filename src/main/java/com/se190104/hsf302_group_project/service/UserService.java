@@ -2,6 +2,7 @@ package com.se190104.hsf302_group_project.service;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,21 +16,13 @@ import com.se190104.hsf302_group_project.repository.RoleRepository;
 import com.se190104.hsf302_group_project.repository.UserRepository;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-
-    public UserService(UserRepository userRepository,
-            RoleRepository roleRepository,
-            ProductRepository productRepository,
-            OrderRepository orderRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.productRepository = productRepository;
-        this.orderRepository = orderRepository;
-    }
 
     public Page<User> getAllUsers(Pageable page) {
         return this.userRepository.findAll(page);
