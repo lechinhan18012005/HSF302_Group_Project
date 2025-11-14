@@ -135,6 +135,28 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
+
+                <!-- Header Dashboard -->
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">
+                            Dashboard
+                            <span class="page-title-badge">Admin</span>
+                        </div>
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin}">Trang quản trị</a>
+                            </li>
+                            <li class="breadcrumb-item active">Thống kê tổng quan</li>
+                        </ol>
+                    </div>
+                    <div class="page-actions">
+                        <button type="button" class="btn-refresh" onclick="location.reload()">
+                            <i class="fas fa-rotate-right"></i>
+                            Làm mới
+                        </button>
+                    </div>
+                </div>
                 <!-- Updated title + subtitle -->
                 <h1 class="mt-4">Dashboard</h1>
                 <p class="mb-3" style="color:#4f6b59; font-weight:600;">Overview for the admin — quick stats and shortcuts</p>
@@ -142,10 +164,25 @@
                     <li class="breadcrumb-item active">Thống kê</li>
                 </ol>
 
+                <!-- Cards: User / Product / Order -->
+                <div class="row g-3 mb-4">
                 <!-- Modern Cards Row -->
                 <div class="row gy-4">
                     <!-- Users -->
                     <div class="col-xl-4 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <div>
+                                    <div class="stat-title">Người dùng</div>
+                                    <div class="stat-value" th:text="${countUsers}">0</div>
+                                    <div class="stat-chip">
+                                        <i class="fas fa-user-check"></i>
+                                        Tổng user trong hệ thống
+                                    </div>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
                         <div class="stat-card animate-fadeUp">
                             <div class="d-flex">
                                 <div class="stat-accent"></div>
@@ -160,6 +197,12 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="stat-footer">
+                                <a class="stat-link" th:href="@{/admin/user}">
+                                    Xem chi tiết
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                                <span class="stat-note">Quản lý tài khoản, phân quyền.</span>
                             <div class="card-footer-modern">
                                 <a th:href="@{/admin/user}">View Details</a>
                                 <div style="color:#9aa99a;"><i class="fas fa-angle-right"></i></div>
@@ -169,6 +212,19 @@
 
                     <!-- Products -->
                     <div class="col-xl-4 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <div>
+                                    <div class="stat-title">Sản phẩm</div>
+                                    <div class="stat-value" th:text="${countProducts}">0</div>
+                                    <div class="stat-chip">
+                                        <i class="fas fa-box-open"></i>
+                                        Tổng sản phẩm đang bán
+                                    </div>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-boxes-stacked"></i>
+                                </div>
                         <div class="stat-card animate-fadeUp" style="animation-delay:0.06s;">
                             <div class="d-flex">
                                 <div class="stat-accent" style="background: linear-gradient(90deg,#157347,#1aa179);"></div>
@@ -183,6 +239,12 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="stat-footer">
+                                <a class="stat-link" th:href="@{/admin/product}">
+                                    Xem chi tiết
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                                <span class="stat-note">Theo dõi tồn kho, trạng thái sản phẩm.</span>
                             <div class="card-footer-modern">
                                 <a th:href="@{/admin/product}">View Details</a>
                                 <div style="color:#9aa99a;"><i class="fas fa-angle-right"></i></div>
@@ -192,6 +254,46 @@
 
                     <!-- Orders -->
                     <div class="col-xl-4 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <div>
+                                    <div class="stat-title">Đơn hàng</div>
+                                    <div class="stat-value" th:text="${countOrders}">0</div>
+                                    <div class="stat-chip">
+                                        <i class="fas fa-receipt"></i>
+                                        Tổng đơn đặt hàng
+                                    </div>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-cart-shopping"></i>
+                                </div>
+                            </div>
+                            <div class="stat-footer">
+                                <a class="stat-link" th:href="@{/admin/order}">
+                                    Xem chi tiết
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                                <span class="stat-note">Theo dõi trạng thái & doanh thu.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Khu vực chart sau này -->
+                <!--
+                <div class="row">
+                    <div class="col-xl-8">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-line me-1"></i>
+                                Doanh thu theo tháng
+                            </div>
+                            <div class="card-body"><canvas id="myAreaChart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+                -->
+
                         <div class="stat-card animate-fadeUp" style="animation-delay:0.12s;">
                             <div class="d-flex">
                                 <div class="stat-accent" style="background: linear-gradient(90deg,#0f7938,#51c884);"></div>
@@ -224,7 +326,7 @@
     </div>
 </div>
 
-<!-- Scripts: giữ thứ tự để tránh lỗi phụ thuộc -->
+<!-- Scripts -->
 <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js}" crossorigin="anonymous"></script>
 <script th:src="@{/js/scripts.js}"></script>
 <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js}" crossorigin="anonymous"></script>

@@ -13175,3 +13175,208 @@ body {
     font-size: 0.75rem;
     border-radius: 0.375rem !important;
 }
+
+
+/* === THEME CHUNG (white + #81c408) ===================================== */
+:root {
+    --primary-color: #81c408;
+    --primary-soft: rgba(129, 196, 8, 0.06);
+    --text-main: #202124;
+    --text-muted: #6b7280;
+    --border-soft: #e5e7eb;
+    --bg-sidebar: #ffffff;
+}
+
+/* === TOP NAVBAR ======================================================== */
+.topnav-main {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-soft);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    color: var(--text-main);
+}
+
+.topnav-main .navbar-brand.topnav-brand {
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--primary-color) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topnav-main .navbar-brand.topnav-brand::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--primary-color);
+}
+
+.topnav-main #sidebarToggle {
+    color: var(--text-muted);
+    transition: all .2s ease;
+}
+
+.topnav-main #sidebarToggle:hover {
+    color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.topnav-user {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.topnav-user-name {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Icon user + dropdown */
+.topnav-main .nav-link {
+    color: var(--text-muted);
+}
+
+.topnav-main .nav-link:hover,
+.topnav-main .nav-link:focus {
+    color: var(--primary-color);
+}
+
+.topnav-main .dropdown-menu {
+    border-radius: 12px;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+    font-size: 0.9rem;
+}
+
+.topnav-main .dropdown-item:hover {
+    background-color: var(--primary-soft);
+    color: var(--primary-color);
+}
+
+/* === SIDEBAR =========================================================== */
+.sidebar-main {
+    background-color: var(--bg-sidebar);
+    color: var(--text-main);
+    border-right: 1px solid var(--border-soft);
+    box-shadow: 12px 0 40px rgba(15, 23, 42, 0.06);
+}
+
+.sidebar-main .sb-sidenav-menu {
+    padding-top: 0.75rem;
+}
+
+.sidebar-main .sb-sidenav-menu-heading {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    padding: 0.75rem 1.25rem 0.25rem;
+}
+
+.sidebar-main .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.55rem 1.1rem;
+    margin: 2px 0.6rem;
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: all .18s ease;
+    position: relative;
+}
+
+.sidebar-main .nav-link .sb-nav-link-icon {
+    width: 22px;
+    display: flex;
+    justify-content: center;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+}
+
+/* hover + active */
+.sidebar-main .nav-link:hover {
+    background-color: var(--primary-soft);
+    color: var(--primary-color);
+}
+
+.sidebar-main .nav-link.active {
+    background-color: var(--primary-soft);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.sidebar-main .nav-link.active::before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 999px;
+    background-color: var(--primary-color);
+}
+
+/* Footer sidebar */
+.sidebar-main .sb-sidenav-footer {
+    background-color: var(--primary-soft);
+    border-top: 1px solid var(--border-soft);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.sidebar-main .sb-sidenav-footer .small {
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+}
+
+.sidebar-main .sb-sidenav-footer span {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+
+/* Modal zoom ảnh */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+    align-items: center;
+    justify-content: center;
+}
+
+.image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    animation: zoomIn .25s ease;
+}
+
+@keyframes zoomIn {
+    from {transform: scale(0.8); opacity: 0;}
+    to {transform: scale(1); opacity: 1;}
+}
+
+.image-modal-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .2s ease;
+}
+
+.image-modal-close:hover {
+    color: var(--primary-color);
+}
