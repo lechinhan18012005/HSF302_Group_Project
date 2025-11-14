@@ -4,10 +4,210 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Delete User</title>
+    <title>Delete User | Admin</title>
 
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --primary-color: #81c408;
+            --primary-soft: rgba(129, 196, 8, 0.06);
+            --text-main: #202124;
+            --text-muted: #6b7280;
+            --border-soft: #e5e7eb;
+            --bg-page: #f5f7fb;
+        }
+
+        body.sb-nav-fixed {
+            background: var(--bg-page);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        /* Header trang + breadcrumb */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1.25rem;
+            font-size: 0.88rem;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--primary-color);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Card xác nhận xoá */
+        .delete-wrapper {
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .card-delete {
+            border-radius: 18px;
+            border: 1px solid var(--border-soft);
+            background: #ffffff;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .card-delete-header {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-delete-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            background: rgba(239, 68, 68, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #dc2626;
+            font-size: 1.2rem;
+        }
+
+        .card-delete-title {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .card-delete-title-main {
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .card-delete-title-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .card-delete-body {
+            padding: 1.1rem 1.4rem 1.3rem;
+        }
+
+        .delete-alert {
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            background: rgba(248, 113, 113, 0.07);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #b91c1c;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .delete-alert i {
+            margin-top: 2px;
+        }
+
+        .delete-user-id {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .delete-user-id span {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Buttons */
+        .delete-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 0.4rem;
+        }
+
+        .btn-delete {
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.3rem;
+            border: none;
+            background-color: #ef4444;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .18s ease;
+        }
+
+        .btn-delete:hover {
+            background-color: #dc2626;
+            box-shadow: 0 10px 24px rgba(239, 68, 68, 0.5);
+        }
+
+        .btn-cancel {
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.1rem;
+            border: 1px solid var(--border-soft);
+            background-color: #ffffff;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .18s ease;
+            text-decoration: none;
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+            text-decoration: none;
+        }
+
+        @media (max-width: 767.98px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body class="sb-nav-fixed">
@@ -24,33 +224,81 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">Manage Users</h1>
+
+                <!-- Page header -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Manage Users</h1>
+                        <p class="page-subtitle">
+                            Xoá người dùng khỏi hệ thống. Hành động này không thể hoàn tác.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Breadcrumb -->
                 <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Users</li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/admin}">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/admin/user}">Users</a>
+                    </li>
+                    <li class="breadcrumb-item active">Delete</li>
                 </ol>
 
-                <div class="mt-5">
-                    <div class="row">
-                        <div class="col-12 mx-auto">
-                            <div class="d-flex justify-content-between">
-                                <h3 th:text="'Delete the user with id = ' + ${id}">Delete the user with id = </h3>
-                            </div>
+                <!-- Delete card -->
+                <div class="delete-wrapper">
+                    <div class="card-delete">
 
-                            <hr/>
-                            <div class="alert alert-danger">
-                                Are you sure to delete this user ?
+                        <!-- Header card -->
+                        <div class="card-delete-header">
+                            <div class="card-delete-icon">
+                                <i class="fas fa-triangle-exclamation"></i>
                             </div>
-
-                            <form th:action="@{/admin/user/delete}"  method="post">
-                                <!-- Hidden Id -->
-                                <div class="mb-3" style="display:none;">
-                                    <label class="form-label">Id:</label>
-                                    <input type="text" class="form-control" name="id" th:value="${id}"/>
+                            <div class="card-delete-title">
+                                <div class="card-delete-title-main">
+                                    Delete user
                                 </div>
-                                <button class="btn btn-danger" type="submit">Confirm</button>
+                                <div class="card-delete-title-sub"
+                                     th:text="'Delete the user with id = ' + ${id}">
+                                    Delete the user with id =
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Body -->
+                        <div class="card-delete-body">
+                            <div class="delete-user-id">
+                                User ID: <span th:text="${id}"></span>
+                            </div>
+
+                            <div class="delete-alert">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <div>
+                                    Are you sure you want to permanently delete this user?
+                                    <br/>
+                                    <span style="font-size: 0.82rem;">This action cannot be undone.</span>
+                                </div>
+                            </div>
+
+                            <form th:action="@{/admin/user/delete}" method="post">
+                                <!-- Hidden Id -->
+                                <input type="hidden" name="id" th:value="${id}"/>
+
+                                <div class="delete-actions">
+                                    <button class="btn-delete" type="submit">
+                                        <i class="fas fa-trash"></i>
+                                        Confirm delete
+                                    </button>
+
+                                    <a th:href="@{/admin/user}" class="btn-cancel">
+                                        <i class="fas fa-arrow-left"></i>
+                                        Cancel
+                                    </a>
+                                </div>
                             </form>
                         </div>
+
                     </div>
                 </div>
 

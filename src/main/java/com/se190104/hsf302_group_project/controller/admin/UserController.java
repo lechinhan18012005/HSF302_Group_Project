@@ -18,8 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller
 @RequiredArgsConstructor
@@ -48,13 +46,7 @@ public class UserController {
         Pageable pageable = PageRequest.of(page - 1, size, sortSpec);
         Page<User> usersPage = userService.getAllUsers(pageable);
 
-        // Lấy thông tin user hiện tại để không cho phép xóa chính mình
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = authentication.getName();
-        User currentUser = userService.getUserByEmail(currentUserEmail);
-
         model.addAttribute("users", usersPage.getContent());
-        model.addAttribute("currentUser", currentUser);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", usersPage.getTotalPages());
         model.addAttribute("size", size);
@@ -168,18 +160,7 @@ public class UserController {
     }
 
     @GetMapping("/admin/user/delete/{id}")
-    public String getDeleteUserPage(Model model, @PathVariable long id, RedirectAttributes redirectAttributes) {
-        // Lấy thông tin user hiện tại đang đăng nhập
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = authentication.getName();
-        User currentUser = userService.getUserByEmail(currentUserEmail);
-
-        // Kiểm tra nếu admin đang cố gắng xóa chính mình
-        if (currentUser != null && currentUser.getId() == id) {
-            redirectAttributes.addFlashAttribute("error", "Bạn không thể xóa chính tài khoản của mình!");
-            return "redirect:/admin/user";
-        }
-
+    public String getDeleteUserPage(Model model, @PathVariable long id) {
         model.addAttribute("id", id);
         //check coi user này có đơn hàng nào ko trc khi xóa nếu có thì không có xóa
         return "admin/user/delete";
@@ -187,17 +168,6 @@ public class UserController {
 
     @PostMapping("/admin/user/delete")
     public String postDeleteUser(RedirectAttributes box, @RequestParam("id") long id) {
-        // Lấy thông tin user hiện tại đang đăng nhập
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = authentication.getName();
-        User currentUser = userService.getUserByEmail(currentUserEmail);
-
-        // Kiểm tra nếu admin đang cố gắng xóa chính mình
-        if (currentUser != null && currentUser.getId() == id) {
-            box.addFlashAttribute("error", "Bạn không thể xóa chính tài khoản của mình!");
-            return "redirect:/admin/user";
-        }
-
         boolean isOrders = orderService.hasOrder(id);
         if(isOrders) {
             box.addFlashAttribute("error", "This user has orders in the System that cannot be deleted");

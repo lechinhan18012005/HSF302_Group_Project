@@ -16,7 +16,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+
+            /* Nền trắng pha xanh lá pastel – đẹp nhất + dịu */
             background: #f6f8f3;
+
             font-family: 'Segoe UI', sans-serif;
         }
 
@@ -62,16 +65,30 @@
             color: white;
             font-weight: 600;
             font-size: 16px;
+            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-login:hover {
             background: #6ea307;
         }
 
-        .error-msg {
-            color: #d9534f;
-            font-size: 15px;
-            margin-bottom: 8px;
+        .btn-login svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .link-register a {
+            color: #81c408;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .link-register a:hover {
+            text-decoration: underline;
         }
 
         @keyframes fadeIn {
@@ -94,66 +111,48 @@
                     <p class="text-muted">Login to continue</p>
                 </div>
 
-                <!-- LOGIN FORM -->
-                <form method="post" th:action="@{/do-login}" onsubmit="return checkCaptcha()">
+                <!-- Form -->
+                <form method="post" th:action="@{/login}">
 
                     <!-- Error messages -->
-                    <div class="error-msg" th:if="${param.error}">
+                    <div class="my-2 text-danger" th:if="${param.error}">
                         Invalid email or password.
                     </div>
-                    <div class="error-msg" th:if="${param.captchaError}">
-                        Please confirm you are not a robot.
-                    </div>
-                    <div class="text-success mb-2" th:if="${param.logout}">
+                    <div class="my-2 text-success" th:if="${param.logout}">
                         Logout success.
                     </div>
 
-                    <!-- Email -->
+                    <!-- Email field -->
                     <div class="position-relative mb-3">
                         <svg class="input-icon" fill="#81c408" viewBox="0 0 24 24">
                             <path d="M12 13L2 6.76V18h20V6.76L12 13zm0-2.2L2 4h20l-10 6.8z"/>
                         </svg>
-                        <input class="form-control" type="email" name="username"
-                               placeholder="Email address" required>
+                        <input class="form-control" type="email" name="username" placeholder="Email address">
                     </div>
 
-                    <!-- Password -->
+                    <!-- Password field -->
                     <div class="position-relative mb-3">
                         <svg class="input-icon" fill="#81c408" viewBox="0 0 24 24">
                             <path d="M17 8h-1V6a4 4 0 10-8 0v2H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2
                             2 0 002-2V10a2 2 0 00-2-2zm-3 0H10V6a2 2 0 114 0v2z"/>
                         </svg>
-                        <input class="form-control" type="password" name="password"
-                               placeholder="Password" required>
+                        <input class="form-control" type="password" name="password" placeholder="Password">
                     </div>
 
-                    <!-- CSRF -->
+                    <!-- CSRF Token -->
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-                    <!-- Hidden captcha token -->
-                    <input type="hidden" id="captchaToken" name="g-recaptcha-response">
-
-                    <!-- reCAPTCHA -->
-                    <div class="my-3">
-                        <div class="g-recaptcha"
-                             th:attr="data-sitekey=${recaptchaSiteKey}"
-                             data-callback="onCaptchaSuccess">
-                        </div>
-                    </div>
-
-                    <!-- Login Button -->
+                    <!-- Login button -->
                     <div class="d-grid">
-                        <button class="btn-login" type="submit">Login</button>
+                        <button class="btn-login" type="submit">
+                            Login
+                        </button>
                     </div>
 
                 </form>
 
-                <div class="text-center mt-4">
-                    <small>
-                        <a th:href="@{/register}" style="color:#81c408; font-weight:600">
-                            Need an account? Sign up!
-                        </a>
-                    </small>
+                <div class="text-center mt-4 link-register">
+                    <small><a th:href="@{/register}">Need an account? Sign up!</a></small>
                 </div>
 
             </div>
@@ -162,22 +161,6 @@
     </div>
 </div>
 
-<!-- reCAPTCHA JS -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
-<script>
-    function onCaptchaSuccess(token) {
-        document.getElementById("captchaToken").value = token;
-    }
-    function checkCaptcha() {
-        let token = document.getElementById("captchaToken").value;
-        if (!token) {
-            alert("Please confirm you're not a robot.");
-            return false; // CHẶN SUBMIT FORM
-        }
-        return true; // CHO SUBMIT
-    }
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
