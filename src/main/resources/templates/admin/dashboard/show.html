@@ -17,6 +17,9 @@
 <!-- Header: thanh điều hướng trên cùng -->
 <div th:replace="~{admin/layout/header :: header}"></div>
 
+<!-- Include notification fragment so toasts are available on this page -->
+<div th:replace="~{admin/layout/notification :: notification}"></div>
+
 <div id="layoutSidenav">
     <!-- Sidebar: điều hướng bên trái -->
     <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>

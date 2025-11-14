@@ -13,6 +13,9 @@
 <!-- Header -->
 <div th:replace="~{admin/layout/header :: header}"></div>
 
+<!-- Include notification fragment so toasts are available on this page -->
+<div th:replace="~{admin/layout/notification :: notification}"></div>
+
 <div id="layoutSidenav">
     <!-- Sidebar -->
     <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
