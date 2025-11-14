@@ -3,12 +3,15 @@ package com.se190104.hsf302_group_project.controller.admin;
 import com.se190104.hsf302_group_project.domain.Order;
 import com.se190104.hsf302_group_project.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,28 +20,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-
-//    public OrderController(OrderService orderService) {
-//        this.orderService = orderService;
-//    }
+    private static final Logger log = LoggerFactory.getLogger(OrderController.class);
 
     @GetMapping("/admin/order")
     public String getDashboard(Model model,
-                               @RequestParam("page") Optional<String> pageOptional) {
+                               @RequestParam(value = "page", defaultValue = "1") int page) {
 
-        int page = 1;
-        try {
-            if (pageOptional.isPresent()) {
-                // convert from String to int
-                page = Integer.parseInt(pageOptional.get());
-            } else {
-                 page = 1;
-            }
-        } catch (Exception e) {
-             page = 1;
-             e.printStackTrace();
-            // TODO: handle exception
-        }
+        if (page < 1) page = 1;
 
         Pageable pageable = PageRequest.of(page - 1, 6);
         Page<Order> ordersPage = this.orderService.fetchAllOrders(pageable);
@@ -52,11 +40,16 @@ public class OrderController {
 
     @GetMapping("/admin/order/{id}")
     public String getOrderDetailPage(Model model, @PathVariable long id) {
-        Order order = this.orderService.fetchOrderById(id).get();
-        model.addAttribute("order", order);
-        model.addAttribute("id", id);
-        model.addAttribute("orderDetails", order.getOrderDetails());
-        return "admin/order/detail";
+        Optional<Order> maybe = this.orderService.fetchOrderById(id);
+        if (maybe.isPresent()) {
+            Order order = maybe.get();
+            model.addAttribute("order", order);
+            model.addAttribute("id", id);
+            model.addAttribute("orderDetails", order.getOrderDetails());
+            return "admin/order/detail";
+        }
+        model.addAttribute("error", "Không tìm thấy đơn hàng.");
+        return "admin/order/show";
     }
 
     @GetMapping("/admin/order/delete/{id}")
@@ -66,22 +59,37 @@ public class OrderController {
     }
 
     @PostMapping("/admin/order/delete")
-    public String postDeleteOrder(@ModelAttribute("id") long id) {
-        this.orderService.deleteOrderById(id);
+    public String postDeleteOrder(@ModelAttribute("id") long id, RedirectAttributes redirectAttributes) {
+        try {
+            this.orderService.deleteOrderById(id);
+            redirectAttributes.addFlashAttribute("success", "Xóa đơn hàng thành công.");
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("error", "Xóa đơn hàng thất bại: " + ex.getMessage());
+            log.error("Error deleting order {}", id, ex);
+        }
         return "redirect:/admin/order";
     }
 
     @GetMapping("/admin/order/update/{id}")
-    public String getUpdateOrderPage(Model model, @PathVariable long id) {
+    public String getUpdateOrderPage(Model model, @PathVariable long id, RedirectAttributes redirectAttributes) {
         Optional<Order> currentOrder = this.orderService.fetchOrderById(id);
-        model.addAttribute("newOrder", currentOrder.get());
-        return "admin/order/update";
+        if (currentOrder.isPresent()) {
+            model.addAttribute("newOrder", currentOrder.get());
+            return "admin/order/update";
+        }
+        redirectAttributes.addFlashAttribute("error", "Không tìm thấy đơn hàng");
+        return "redirect:/admin/order";
     }
 
     @PostMapping("/admin/order/update")
-    public String handleUpdateOrder(@ModelAttribute("newOrder") Order order) {
-        this.orderService.updateOrder(order);
+    public String handleUpdateOrder(@ModelAttribute("newOrder") Order order, RedirectAttributes redirectAttributes) {
+        try {
+            this.orderService.updateOrder(order);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật đơn hàng thành công.");
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("error", "Cập nhật đơn hàng thất bại: " + ex.getMessage());
+            log.error("Error updating order {}", order != null ? order.getId() : null, ex);
+        }
         return "redirect:/admin/order";
     }
 }
-

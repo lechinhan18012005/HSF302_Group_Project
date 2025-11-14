@@ -1,0 +1,32 @@
+<!--Đây là giao diện để hiển thị thông báo ở góc phải dưới mỗi khi Admin thực hiện tác vụ thay đổi dữ liệu-->
+<!--Màu chủ đạo của trang web là trắng và xanh lá-->
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="notification">
+    <!-- Toast container positioned at top-right -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+
+        <!-- Success Toast -->
+        <div th:if="${success != null}"
+             class="toast align-items-center text-bg-success border-0"
+             role="alert" aria-live="assertive" aria-atomic="true"
+             id="toast-success">
+            <div class="d-flex">
+                <div class="toast-body" th:text="${success}">Success message</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+
+        <!-- Error Toast -->
+        <div th:if="${error != null}"
+             class="toast align-items-center text-bg-danger border-0"
+             role="alert" aria-live="assertive" aria-atomic="true"
+             id="toast-error">
+            <div class="d-flex">
+                <div class="toast-body" th:text="${error}">Error message</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+
+    </div>
+</div>

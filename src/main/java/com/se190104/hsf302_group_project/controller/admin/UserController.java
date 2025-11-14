@@ -70,10 +70,11 @@ public class UserController {
     }
 
     @PostMapping(value = "/admin/user/create")
-    public String createUserPage(Model model,
+    public String createUserPage(
                                  @ModelAttribute("newUser") @Valid User user,
                                  BindingResult newUserBindingResult,
-                                 @RequestParam("avatarFile") MultipartFile file) {
+                                 @RequestParam("avatarFile") MultipartFile file,
+                                 RedirectAttributes redirectAttributes) {
 
         // Manual validation logic
         validateUserInput(user.getFullName(), user.getPhone(), user.getAddress(), newUserBindingResult);
@@ -88,15 +89,21 @@ public class UserController {
             return "admin/user/create";
         }
 
-        //
-        String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
-        String hashPassword = this.passwordEncoder.encode(user.getPassword());
+        try {
+            String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
+            String hashPassword = this.passwordEncoder.encode(user.getPassword());
 
-        user.setAvatar(avatar);
-        user.setPassword(hashPassword);
-        user.setRole(this.userService.getRoleByName(user.getRole().getName()));
-        // save
-        this.userService.handleSaveUser(user);
+            user.setAvatar(avatar);
+            user.setPassword(hashPassword);
+            user.setRole(this.userService.getRoleByName(user.getRole().getName()));
+            // save
+            this.userService.handleSaveUser(user);
+
+            redirectAttributes.addFlashAttribute("success", "Tạo người dùng thành công.");
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("error", "Tạo người dùng thất bại: " + ex.getMessage());
+        }
+
         return "redirect:/admin/user";
     }
 
@@ -122,7 +129,8 @@ public class UserController {
     @PostMapping("/admin/user/update")
     public String postUpdateUser(Model model,
                                 @ModelAttribute("newUser") UserUpdateDTO userUpdateDTO,
-                                BindingResult bindingResult) {
+                                BindingResult bindingResult,
+                                RedirectAttributes redirectAttributes) {
 
         // Manual validation logic for update
         validateUserInput(userUpdateDTO.getFullName(), userUpdateDTO.getPhone(), userUpdateDTO.getAddress(), bindingResult);
@@ -139,7 +147,14 @@ public class UserController {
             currentUser.setFullName(userUpdateDTO.getFullName());
             currentUser.setPhone(userUpdateDTO.getPhone());
 
-            this.userService.handleSaveUser(currentUser);
+            try {
+                this.userService.handleSaveUser(currentUser);
+                redirectAttributes.addFlashAttribute("success", "Cập nhật người dùng thành công.");
+            } catch (Exception ex) {
+                redirectAttributes.addFlashAttribute("error", "Cập nhật thất bại: " + ex.getMessage());
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Người dùng không tồn tại.");
         }
         return "redirect:/admin/user";
     }
@@ -155,11 +170,15 @@ public class UserController {
     public String postDeleteUser(RedirectAttributes box, @RequestParam("id") long id) {
         boolean isOrders = orderService.hasOrder(id);
         if(isOrders) {
-            box.addFlashAttribute("fail", "This user has orders in the System that cannot be deleted");
+            box.addFlashAttribute("error", "This user has orders in the System that cannot be deleted");
             return "redirect:/admin/user";
         }
-        box.addFlashAttribute("success", "This user has been successfully deleted");
-        userService.deleteAUser(id);
+        try {
+            userService.deleteAUser(id);
+            box.addFlashAttribute("success", "Xóa người dùng thành công");
+        } catch (Exception ex) {
+            box.addFlashAttribute("error", "Xóa thất bại: " + ex.getMessage());
+        }
         return "redirect:/admin/user";
     }
 
