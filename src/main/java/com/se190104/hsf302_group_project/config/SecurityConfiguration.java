@@ -84,6 +84,7 @@ public class SecurityConfiguration {
                 .rememberMe(r -> r.rememberMeServices(rememberMeServices()))
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
+                        .loginProcessingUrl("/do-login")
                         .failureUrl("/login?error")
                         .successHandler(customSuccessHandler())
                         .permitAll())
