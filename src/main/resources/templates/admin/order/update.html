@@ -1,15 +1,192 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Update Order</title>
+    <title>Update Order | Admin</title>
 
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #6bad06;
+            --primary-soft: rgba(107, 173, 6, 0.06);
+            --text-main: #202124;
+            --text-muted: #6b7280;
+            --border-soft: #e5e7eb;
+            --bg-page: #f5f7fb;
+        }
+
+        body.sb-nav-fixed {
+            background: var(--bg-page);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        /* Page header + breadcrumb */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1.25rem;
+            font-size: 0.88rem;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--primary-color);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Form card */
+        .order-form-wrapper {
+            max-width: 640px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .card-form {
+            border-radius: 18px;
+            border: 1px solid var(--border-soft);
+            background: #ffffff;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .card-form-header {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-form-title {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .card-form-title-main {
+            font-size: 1.05rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-form-title-main i {
+            color: var(--primary-color);
+        }
+
+        .card-form-title-sub {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+        }
+
+        .card-form-id-badge {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: var(--primary-soft);
+            color: var(--primary-color);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .card-form-body {
+            padding: 1.2rem 1.4rem 1.6rem;
+        }
+
+        .form-text-muted {
+            font-size: 0.86rem;
+            color: var(--text-muted);
+        }
+
+        /* Button primary (Update) */
+        .btn-primary {
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.4rem;
+            border: none;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all .18s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a9605;
+            box-shadow: 0 10px 24px rgba(107, 173, 6, 0.45);
+        }
+
+        /* Nút Cancel */
+        .btn-cancel {
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.4rem;
+            border: 1px solid var(--border-soft);
+            background-color: #ffffff;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .18s ease;
+            text-decoration: none;
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+        }
+
+
+        @media (max-width: 767.98px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body class="sb-nav-fixed">
@@ -26,65 +203,106 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">Orders</h1>
+
+                <!-- Page header -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Orders</h1>
+                        <p class="page-subtitle">
+                            Cập nhật trạng thái và thông tin cơ bản của đơn hàng.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Breadcrumb -->
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a th:href="@{/admin/order}">Order</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/order}">Orders</a></li>
                     <li class="breadcrumb-item active">Update</li>
                 </ol>
 
-                <div class="mt-5">
-                    <div class="row">
-                        <div class="col-md-6 col-12 mx-auto">
-                            <h3>Update an order</h3>
-                            <hr />
-
-                            <!-- Form cập nhật -->
-                            <form th:action="@{/admin/order/update}" th:object="${newOrder}" method="post" class="row">
-                                <!-- Hidden ID -->
-                                <div class="mb-3" style="display:none;">
-                                    <label class="form-label">Id:</label>
-                                    <input type="text" class="form-control" th:field="*{id}" />
+                <!-- Form update -->
+                <div class="order-form-wrapper">
+                    <div class="card-form">
+                        <div class="card-form-header">
+                            <div class="card-form-title">
+                                <div class="card-form-title-main">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Update order</span>
                                 </div>
+                                <div class="card-form-title-sub">
+                                    Chỉnh sửa trạng thái đơn hàng và xem nhanh thông tin chính.
+                                </div>
+                            </div>
+                            <div class="card-form-id-badge">
+                                ORDER ID: <span th:text="*{id}">1</span>
+                            </div>
+                        </div>
 
-                                <!-- Hiển thị thông tin đơn -->
-                                <div class="mb-3">
-                                    <label>Order ID = <span th:text="*{id}">1</span></label>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <label class="form-label">
-                                        Price:
+                        <div class="card-form-body">
+                            <form th:action="@{/admin/order/update}"
+                                  th:object="${newOrder}"
+                                  method="post"
+                                  class="row g-3">
+
+                                <!-- Hidden ID -->
+                                <input type="hidden" th:field="*{id}" />
+
+                                <!-- Tổng tiền -->
+                                <div class="col-12">
+                                    <span class="form-text-muted">
+                                        Tổng giá trị đơn:&nbsp;
+                                    </span>
+                                    <strong>
                                         <span th:text="${#numbers.formatDecimal(newOrder.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">
-                                                0 đ
-                                            </span>
-                                    </label>
+                                            0 đ
+                                        </span>
+                                    </strong>
                                 </div>
 
                                 <!-- User -->
-                                <div class="mb-3 col-12 col-md-6">
-                                    <label class="form-label">User:</label>
-                                    <input type="text" class="form-control" th:field="*{user.fullName}" disabled />
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label">User</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           th:field="*{user.fullName}"
+                                           disabled />
+                                    <div class="form-text-muted mt-1">
+                                        Tên khách hàng đặt đơn.
+                                    </div>
                                 </div>
 
                                 <!-- Status -->
-                                <div class="mb-3 col-12 col-md-6">
-                                    <label class="form-label">Status:</label>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label">Status</label>
                                     <select class="form-select" th:field="*{status}">
                                         <option value="PENDING">PENDING</option>
                                         <option value="SHIPPING">SHIPPING</option>
                                         <option value="COMPLETE">COMPLETE</option>
                                         <option value="CANCEL">CANCEL</option>
                                     </select>
+                                    <div class="form-text-muted mt-1">
+                                        Cập nhật trạng thái xử lý của đơn hàng.
+                                    </div>
                                 </div>
 
                                 <!-- Submit -->
-                                <div class="col-12 mb-5">
-                                    <button type="submit" class="btn btn-warning">Update</button>
+                                <div class="col-12 mt-3 d-flex gap-2">
+                                    <button type="submit" class="btn-primary">
+                                        <i class="fas fa-save"></i>
+                                        <span>Update order</span>
+                                    </button>
+
+                                    <a th:href="@{/admin/order}" class="btn-cancel">
+                                        <i class="fas fa-arrow-left"></i>
+                                        <span>Cancel</span>
+                                    </a>
                                 </div>
                             </form>
-
                         </div>
                     </div>
                 </div>
+
             </div>
         </main>
 
@@ -97,5 +315,4 @@
         crossorigin="anonymous"></script>
 <script th:src="@{/js/scripts.js}"></script>
 </body>
-
 </html>

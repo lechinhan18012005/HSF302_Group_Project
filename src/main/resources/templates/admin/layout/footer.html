@@ -1,32 +1,12 @@
-<footer class="py-4 bg-success mt-auto" xmlns:th="http://www.thymeleaf.org" th:fragment="footer">
-    <style>
-        footer {
-            background: linear-gradient(90deg, #0f7938 0%, #198754 100%) !important;
-            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .text-white {
-            font-weight: 500;
-        }
-        footer a {
-            transition: all 0.3s ease;
-            text-decoration: none;
-            padding-bottom: 2px;
-            border-bottom: 2px solid transparent;
-        }
-        footer a:hover {
-            color: #c8e6c9 !important;
-            border-bottom-color: #c8e6c9;
-            transform: translateY(-2px);
-        }
-    </style>
+<footer class="py-4 bg-light mt-auto" xmlns:th="http://www.thymeleaf.org" th:fragment="footer">
     <div class="container-fluid px-4">
         <div class="d-flex align-items-center justify-content-between small">
-            <div class="text-white">
+            <div class="text-muted">
                 &copy; <span th:text="${T(java.time.Year).now()}">2025</span> HSF302
             </div>
             <div>
                 <!-- external static link: use plain href to avoid Thymeleaf URL parsing issues -->
-                <a class="text-white" href="https://www.youtube.com/c/gi%C3%A1ol%C3%A0ng" target="_blank" rel="noopener">My Channel</a>
+                <a href="https://www.youtube.com/c/gi%C3%A1ol%C3%A0ng" target="_blank" rel="noopener">My Channel</a>
             </div>
         </div>
     </div>

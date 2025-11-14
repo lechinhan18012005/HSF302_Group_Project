@@ -4,10 +4,244 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Detail Order</title>
+    <title>Order Detail | Admin</title>
 
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --primary-color: #6bad06;
+            --primary-soft: rgba(107, 173, 6, 0.06);
+            --text-main: #202124;
+            --text-muted: #6b7280;
+            --border-soft: #e5e7eb;
+            --bg-page: #f5f7fb;
+        }
+
+        body.sb-nav-fixed {
+            background: var(--bg-page);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        /* Header trang + breadcrumb */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1.25rem;
+            font-size: 0.88rem;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--primary-color);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Wrapper + card chi tiết order */
+        .order-detail-wrapper {
+            max-width: 1000px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .card-order-detail {
+            border-radius: 18px;
+            border: 1px solid var(--border-soft);
+            background: #ffffff;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .card-order-header {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-order-title {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .card-order-title-main {
+            font-size: 1.05rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-order-title-main i {
+            color: var(--primary-color);
+        }
+
+        .card-order-title-sub {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+        }
+
+        .card-order-id-badge {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: var(--primary-soft);
+            color: var(--primary-color);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .card-order-body {
+            padding: 1.2rem 1.4rem 1.4rem;
+        }
+
+        /* Table sản phẩm */
+        .order-table thead {
+            background-color: #f9fafb;
+        }
+
+        .order-table thead th {
+            border-bottom-width: 1px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            border-color: var(--border-soft);
+        }
+
+        .order-table tbody td,
+        .order-table tbody th {
+            vertical-align: middle;
+            font-size: 0.9rem;
+            border-color: var(--border-soft);
+        }
+
+        .order-empty-row td {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 1.2rem 0;
+            font-style: italic;
+        }
+
+        .product-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .order-product-thumb {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid var(--border-soft);
+            background: #f9fafb;
+        }
+
+        .product-name-link {
+            color: var(--text-main);
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .product-name-link:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .order-price,
+        .order-total {
+            font-weight: 600;
+        }
+
+        .order-total {
+            color: var(--primary-color);
+        }
+
+        .qty-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #f3f4f6;
+            font-size: 0.86rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        /* Nút Back */
+        .btn-back {
+            margin-top: 1.4rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.2rem;
+            border: 1px solid var(--border-soft);
+            background-color: #ffffff;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .18s ease;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+            text-decoration: none;
+        }
+
+        @media (max-width: 767.98px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body class="sb-nav-fixed">
@@ -24,90 +258,115 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">Orders</h1>
+
+                <!-- Page header -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Orders</h1>
+                        <p class="page-subtitle">
+                            Xem chi tiết các sản phẩm trong đơn hàng.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Breadcrumb -->
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a th:href="@{/admin/order}">Order</a></li>
-                    <li class="breadcrumb-item active">View detail</li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/order}">Orders</a></li>
+                    <li class="breadcrumb-item active">Detail</li>
                 </ol>
 
-                <div class="mt-5">
-                    <div class="row">
-                        <div class="col-12 mx-auto">
-                            <div class="d-flex justify-content-between">
-                                <h3>
-                                    Order detail with id = <span th:text="${id}">1</span>
-                                </h3>
+                <!-- Nội dung -->
+                <div class="order-detail-wrapper">
+                    <div class="card-order-detail">
+
+                        <!-- Header card -->
+                        <div class="card-order-header">
+                            <div class="card-order-title">
+                                <div class="card-order-title-main">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    <span>Order detail</span>
+                                </div>
                             </div>
+                            <div class="card-order-id-badge">
+                                ORDER ID: <span th:text="${id}">1</span>
+                            </div>
+                        </div>
 
-                            <hr/>
-
+                        <!-- Body card -->
+                        <div class="card-order-body">
                             <div class="table-responsive">
-                                <table class="table">
+                                <table class="table order-table">
                                     <thead>
                                     <tr>
-                                        <th scope="col">Sản phẩm</th>
-                                        <th scope="col">Tên</th>
-                                        <th scope="col">Giá cả</th>
-                                        <th scope="col">Số lượng</th>
-                                        <th scope="col">Thành tiền</th>
+                                        <th style="width: 220px;">Sản phẩm</th>
+                                        <th>Tên</th>
+                                        <th class="text-right" style="width: 140px;">Giá</th>
+                                        <th class="text-center" style="width: 100px;">Số lượng</th>
+                                        <th class="text-right" style="width: 160px;">Thành tiền</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <!-- Nếu rỗng -->
-                                    <tr th:if="${#lists.isEmpty(orderDetails)}">
-                                        <td colspan="6">Không có sản phẩm trong giỏ hàng</td>
+                                    <tr th:if="${#lists.isEmpty(orderDetails)}" class="order-empty-row">
+                                        <td colspan="5">Không có sản phẩm trong đơn hàng.</td>
                                     </tr>
 
                                     <!-- Lặp chi tiết đơn -->
                                     <tr th:each="orderDetail : ${orderDetails}">
                                         <th scope="row">
-                                            <div class="d-flex align-items-center">
+                                            <div class="product-cell">
                                                 <img th:src="@{/images/product/{img}(img=${orderDetail.product.image})}"
-                                                     class="img-fluid me-5 rounded-circle"
-                                                     style="width: 80px; height: 80px;" alt="">
+                                                     class="order-product-thumb"
+                                                     alt="Product image">
                                             </div>
                                         </th>
 
                                         <td>
-                                            <p class="mb-0 mt-4">
-                                                <a th:href="@{/product/{id}(id=${orderDetail.product.id})}"
-                                                   target="_blank"
-                                                   th:text="${orderDetail.product.name}">Product Name</a>
-                                            </p>
+                                            <a class="product-name-link"
+                                               th:href="@{/product/{id}(id=${orderDetail.product.id})}"
+                                               target="_blank"
+                                               th:text="${orderDetail.product.name}">
+                                                Product Name
+                                            </a>
                                         </td>
 
-                                        <td>
-                                            <p class="mb-0 mt-4"
-                                               th:text="${#numbers.formatDecimal(orderDetail.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                        <td class="text-right">
+                                            <span class="order-price"
+                                                  th:text="${#numbers.formatDecimal(orderDetail.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
                                                 0 đ
-                                            </p>
+                                            </span>
                                         </td>
 
-                                        <td>
-                                            <div class="input-group quantity mt-4" style="width: 100px;">
-                                                <input type="text"
-                                                       class="form-control form-control-sm text-center border-0"
-                                                       th:value="${orderDetail.quantity}">
-                                            </div>
+                                        <td class="text-center">
+                                            <span class="qty-badge"
+                                                  th:text="${orderDetail.quantity}">
+                                                1
+                                            </span>
                                         </td>
 
-                                        <td>
-                                            <p class="mb-0 mt-4"
-                                               th:attr="data-cart-detail-id=${orderDetail.id}"
-                                               th:text="${#numbers.formatDecimal(orderDetail.price * orderDetail.quantity, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                        <td class="text-right">
+                                            <span class="order-total"
+                                                  th:attr="data-cart-detail-id=${orderDetail.id}"
+                                                  th:text="${#numbers.formatDecimal(orderDetail.price * orderDetail.quantity, 0, 'COMMA', 0, 'POINT')} + ' đ'">
                                                 0 đ
-                                            </p>
+                                            </span>
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
 
-                            <a th:href="@{/admin/order}" class="btn btn-success mt-3">Back</a>
+                            <!-- Back button -->
+                            <a th:href="@{/admin/order}" class="btn-back">
+                                <i class="fas fa-arrow-left"></i>
+                                Back to orders
+                            </a>
                         </div>
+
                     </div>
                 </div>
+
             </div>
         </main>
 

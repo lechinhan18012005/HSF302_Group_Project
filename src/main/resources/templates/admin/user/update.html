@@ -4,10 +4,218 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Update User</title>
+    <title>Update User | Admin</title>
 
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --primary-color: #81c408;
+            --primary-soft: rgba(129, 196, 8, 0.06);
+            --text-main: #202124;
+            --text-muted: #6b7280;
+            --border-soft: #e5e7eb;
+            --bg-page: #f5f7fb;
+        }
+
+        body.sb-nav-fixed {
+            background: var(--bg-page);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        /* Header trang + breadcrumb */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1.25rem;
+            font-size: 0.88rem;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--primary-color);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Wrapper + card form */
+        .user-form-wrapper {
+            max-width: 720px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .card-user-form {
+            border-radius: 18px;
+            border: 1px solid var(--border-soft);
+            background: #ffffff;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .card-user-form-header {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-user-form-title {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .card-user-form-title-main {
+            font-size: 1.05rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-user-form-title-main i {
+            color: var(--primary-color);
+        }
+
+        .card-user-form-title-sub {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .card-user-form-email {
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: var(--primary-soft);
+            color: var(--primary-color);
+            font-weight: 500;
+            max-width: 220px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: right;
+        }
+
+        .card-user-form-body {
+            padding: 1.1rem 1.4rem 1.3rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            border-radius: 12px;
+            border-color: var(--border-soft);
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.15rem rgba(129, 196, 8, 0.25);
+        }
+
+        .form-text {
+            font-size: 0.8rem;
+        }
+
+        .invalid-feedback {
+            font-size: 0.8rem;
+        }
+
+        /* Buttons */
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit {
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.3rem;
+            border: none;
+            background-color: #81c408;;
+            color: black;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .18s ease;
+        }
+
+        .btn-submit:hover {
+            background-color:#81c408;;
+            color: black;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+        }
+
+        .btn-back-ghost {
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.1rem;
+            border: 1px solid var(--border-soft);
+            background-color: #ffffff;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .18s ease;
+            text-decoration: none;
+        }
+
+        .btn-back-ghost:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+            text-decoration: none;
+        }
+
+        @media (max-width: 767.98px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body class="sb-nav-fixed">
@@ -24,74 +232,128 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">Manage Users</h1>
+
+                <!-- Page header -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Manage Users</h1>
+                        <p class="page-subtitle">
+                            Cập nhật thông tin người dùng trong hệ thống.
+                        </p>
+                    </div>
+                </div>
 
                 <!-- Breadcrumb -->
                 <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Users</li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/admin}">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/admin/user}">Users</a>
+                    </li>
+                    <li class="breadcrumb-item active">Update</li>
                 </ol>
 
-                <div class="mt-5">
-                    <div class="row">
-                        <div class="col-md-6 col-12 mx-auto">
-                            <h3>Update a user</h3>
-                            <hr/>
+                <div class="user-form-wrapper">
+                    <div class="card-user-form">
+                        <!-- Card header -->
+                        <div class="card-user-form-header">
+                            <div class="card-user-form-title">
+                                <div class="card-user-form-title-main">
+                                    <i class="fas fa-user-pen"></i>
+                                    <span>Update user</span>
+                                </div>
+                                <div class="card-user-form-title-sub">
+                                    Chỉnh sửa thông tin cơ bản của người dùng.
+                                </div>
+                            </div>
+                            <div class="card-user-form-email" th:text="${userEmail}">
+                                user@example.com
+                            </div>
+                        </div>
 
-                            <!-- Form -->
-                            <form th:action="@{/admin/user/update}" th:object="${newUser}" method="post" class="row">
+                        <!-- Card body / Form -->
+                        <div class="card-user-form-body">
+                            <form th:action="@{/admin/user/update}"
+                                  th:object="${newUser}"
+                                  method="post"
+                                  class="row g-3">
 
                                 <!-- Hidden ID -->
-                                <div class="mb-3" style="display:none;">
-                                    <label class="form-label">Id:</label>
-                                    <input type="text" class="form-control" th:field="*{id}"/>
-                                </div>
+                                <input type="hidden" th:field="*{id}"/>
 
-                                <!-- Email (read-only) -->
-                                <div class="mb-3">
-                                    <label class="form-label">Email:</label>
-                                    <input type="text" class="form-control" th:value="${userEmail}" disabled="true"/>
-                                    <small class="form-text text-muted">Email không thể thay đổi</small>
+                                <!-- Email (hiển thị, không sửa) -->
+                                <div class="col-12">
+                                    <label class="form-label">Email</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           th:value="${userEmail}"
+                                           disabled="true"/>
+                                    <div class="form-text">Email không thể thay đổi.</div>
                                 </div>
 
                                 <!-- Phone -->
-                                <div class="mb-3">
-                                    <label class="form-label">Phone number:</label>
+                                <div class="col-12">
+                                    <label class="form-label">Phone number</label>
                                     <input type="text"
                                            th:class="'form-control' + (${#fields.hasErrors('phone')} ? ' is-invalid' : '')"
                                            th:field="*{phone}"
                                            placeholder="Ví dụ: 0123456789"/>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}"
-                                         th:errors="*{phone}">Phone error</div>
+                                    <div class="invalid-feedback"
+                                         th:if="${#fields.hasErrors('phone')}"
+                                         th:errors="*{phone}">
+                                        Phone error
+                                    </div>
                                 </div>
 
                                 <!-- Full Name -->
-                                <div class="mb-3">
-                                    <label class="form-label">Full Name:</label>
+                                <div class="col-12">
+                                    <label class="form-label">Full Name</label>
                                     <input type="text"
                                            th:class="'form-control' + (${#fields.hasErrors('fullName')} ? ' is-invalid' : '')"
-                                           th:field="*{fullName}"/>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}"
-                                         th:errors="*{fullName}">FullName error</div>
+                                           th:field="*{fullName}"
+                                           placeholder="Nhập họ tên đầy đủ"/>
+                                    <div class="invalid-feedback"
+                                         th:if="${#fields.hasErrors('fullName')}"
+                                         th:errors="*{fullName}">
+                                        FullName error
+                                    </div>
                                 </div>
 
                                 <!-- Address -->
-                                <div class="mb-3">
-                                    <label class="form-label">Address:</label>
+                                <div class="col-12">
+                                    <label class="form-label">Address</label>
                                     <input type="text"
                                            th:class="'form-control' + (${#fields.hasErrors('address')} ? ' is-invalid' : '')"
-                                           th:field="*{address}"/>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('address')}"
-                                         th:errors="*{address}">Address error</div>
+                                           th:field="*{address}"
+                                           placeholder="Địa chỉ cụ thể"/>
+                                    <div class="invalid-feedback"
+                                         th:if="${#fields.hasErrors('address')}"
+                                         th:errors="*{address}">
+                                        Address error
+                                    </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-warning">Update</button>
-                            </form>
-                            <!-- /Form -->
+                                <!-- Actions -->
+                                <div class="col-12">
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn-submit">
+                                            <i class="fas fa-save"></i>
+                                            Update
+                                        </button>
 
+                                        <a th:href="@{/admin/user}" class="btn-back-ghost">
+                                            <i class="fas fa-arrow-left"></i>
+                                            Cancel
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
+
                     </div>
                 </div>
+
             </div>
         </main>
 

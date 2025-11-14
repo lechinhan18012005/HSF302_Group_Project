@@ -4,10 +4,189 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Detail User</title>
+    <title>User Detail | Admin</title>
 
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --primary-color: #81c408;
+            --primary-soft: rgba(129, 196, 8, 0.06);
+            --text-main: #202124;
+            --text-muted: #6b7280;
+            --border-soft: #e5e7eb;
+            --bg-page: #f5f7fb;
+        }
+
+        body.sb-nav-fixed {
+            background: var(--bg-page);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        /* Header trang + breadcrumb */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1.25rem;
+            font-size: 0.88rem;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--primary-color);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Card chi tiết user */
+        .user-detail-wrapper {
+            max-width: 720px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .card-user-detail {
+            border-radius: 18px;
+            border: 1px solid var(--border-soft);
+            background: #ffffff;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .card-user-header {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-user-title {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .card-user-title-main {
+            font-size: 1.05rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-user-title-main i {
+            color: var(--primary-color);
+        }
+
+        .card-user-title-sub {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .card-user-id-badge {
+            font-size: 0.78rem;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: var(--primary-soft);
+            color: var(--primary-color);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .card-user-body {
+            padding: 1.1rem 1.4rem 1.2rem;
+        }
+
+        .user-info-item {
+            padding: 0.65rem 0;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .user-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-info-label {
+            min-width: 110px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .user-info-value {
+            font-size: 0.94rem;
+            color: var(--text-main);
+        }
+
+        /* Nút Back */
+        .btn-back {
+            margin-top: 1.3rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--border-soft);
+            background-color: #ffffff;
+            color: var(--text-muted);
+            transition: all .18s ease;
+        }
+
+        .btn-back:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+            text-decoration: none;
+        }
+
+        @media (max-width: 767.98px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body class="sb-nav-fixed">
@@ -24,49 +203,71 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">Manage Users</h1>
+
+                <!-- Page header -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Manage Users</h1>
+                        <p class="page-subtitle">
+                            Xem chi tiết thông tin người dùng trong hệ thống.
+                        </p>
+                    </div>
+                </div>
 
                 <!-- Breadcrumb -->
                 <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Users</li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/admin}">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/admin/user}">Users</a>
+                    </li>
+                    <li class="breadcrumb-item active">Detail</li>
                 </ol>
 
-                <div class="container mt-5">
-                    <div class="row">
-                        <div class="col-12 mx-auto">
-                            <div class="d-flex justify-content-between">
-                                <h3 th:text="'User detail with id = ' + ${id}">User detail with id = </h3>
-                            </div>
+                <!-- Content -->
+                <div class="user-detail-wrapper">
+                    <div class="card-user-detail">
 
-                            <hr/>
-
-                            <!-- User Info Card -->
-                            <div class="card" style="width: 60%">
-                                <div class="card-header">
-                                    User information
+                        <!-- Header card -->
+                        <div class="card-user-header">
+                            <div class="card-user-title">
+                                <div class="card-user-title-main">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>User detail</span>
                                 </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <strong>ID:</strong> <span th:text="${user.id}"></span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <strong>Email:</strong> <span th:text="${user.email}"></span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <strong>Full Name:</strong> <span th:text="${user.fullName}"></span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <strong>Address:</strong> <span th:text="${user.address}"></span>
-                                    </li>
-                                </ul>
+                            </div>
+                            <div class="card-user-id-badge">
+                                ID: <span th:text="${user.id}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Body card -->
+                        <div class="card-user-body">
+                            <div class="user-info-item">
+                                <div class="user-info-label">Email</div>
+                                <div class="user-info-value" th:text="${user.email}">email@example.com</div>
                             </div>
 
-                            <!-- Back button -->
-                            <a th:href="@{/admin/user}" class="btn btn-success mt-3">Back</a>
+                            <div class="user-info-item">
+                                <div class="user-info-label">Full Name</div>
+                                <div class="user-info-value" th:text="${user.fullName}">Full name</div>
+                            </div>
+
+                            <div class="user-info-item">
+                                <div class="user-info-label">Address</div>
+                                <div class="user-info-value" th:text="${user.address}">Address</div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Back button -->
+                    <a th:href="@{/admin/user}" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to list
+                    </a>
                 </div>
+
             </div>
         </main>
 

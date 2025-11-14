@@ -1,36 +1,14 @@
 <!--Đây là giao diện để hiển thị thông báo ở góc phải dưới mỗi khi Admin thực hiện tác vụ thay đổi dữ liệu-->
 <!--Màu chủ đạo của trang web là trắng và xanh lá-->
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="notification">
-    <style>
-        /* Slightly lower than top to avoid overlapping header, larger toast visuals */
-        .toast-container.position-fixed.top-offset {
-            top: 4.8rem; /* move down a bit; adjust if your header is taller/shorter */
-            right: 1rem;
-            z-index: 1080;
-        }
-        .toast.custom-toast {
-            min-width: 340px;
-            max-width: 460px;
-            font-size: 1.05rem;
-        }
-        .toast.custom-toast .toast-body {
-            padding: 1rem 1.25rem;
-        }
-        /* Optional: subtle drop shadow for better separation */
-        .toast.custom-toast {
-            box-shadow: 0 6px 18px rgba(13, 110, 253, 0.12);
-        }
-    </style>
-
-    <!-- Toast container positioned slightly below top-right to avoid header overlap -->
-    <div class="toast-container position-fixed top-offset p-3">
+    <!-- Toast container positioned at top-right -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
 
         <!-- Success Toast -->
         <div th:if="${success != null}"
-             class="toast align-items-center text-bg-success border-0 custom-toast"
+             class="toast align-items-center text-bg-success border-0"
              role="alert" aria-live="assertive" aria-atomic="true"
-             id="toast-success"
-             data-bs-autohide="true" data-bs-delay="7000">
+             id="toast-success">
             <div class="d-flex">
                 <div class="toast-body" th:text="${success}">Success message</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto"
@@ -40,10 +18,9 @@
 
         <!-- Error Toast -->
         <div th:if="${error != null}"
-             class="toast align-items-center text-bg-danger border-0 custom-toast"
+             class="toast align-items-center text-bg-danger border-0"
              role="alert" aria-live="assertive" aria-atomic="true"
-             id="toast-error"
-             data-bs-autohide="true" data-bs-delay="7000">
+             id="toast-error">
             <div class="d-flex">
                 <div class="toast-body" th:text="${error}">Error message</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto"
@@ -52,22 +29,4 @@
         </div>
 
     </div>
-
-    <!-- Auto-show toasts when fragment is rendered; requires Bootstrap JS available on page -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            try {
-                var toastEls = document.querySelectorAll('.toast');
-                toastEls.forEach(function (el) {
-                    if (el.offsetParent !== null) { // only show if rendered (th:if present)
-                        var t = bootstrap.Toast.getOrCreateInstance(el);
-                        t.show();
-                    }
-                });
-            } catch (e) {
-                // bootstrap not available or other JS error; fail silently
-                console.warn('Toast init skipped:', e);
-            }
-        });
-    </script>
 </div>
