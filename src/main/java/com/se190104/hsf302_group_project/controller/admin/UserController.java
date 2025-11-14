@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,6 +49,11 @@ public class UserController {
         Pageable pageable = PageRequest.of(page - 1, size, sortSpec);
         Page<User> usersPage = userService.getAllUsers(pageable);
 
+        // Lấy thông tin user hiện tại để không cho phép xóa chính mình
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        User currentUser = userService.getUserByEmail(currentUserEmail);
+
         model.addAttribute("users", usersPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", usersPage.getTotalPages());
@@ -71,10 +79,10 @@ public class UserController {
 
     @PostMapping(value = "/admin/user/create")
     public String createUserPage(
-                                 @ModelAttribute("newUser") @Valid User user,
-                                 BindingResult newUserBindingResult,
-                                 @RequestParam("avatarFile") MultipartFile file,
-                                 RedirectAttributes redirectAttributes) {
+            @ModelAttribute("newUser") @Valid User user,
+            BindingResult newUserBindingResult,
+            @RequestParam("avatarFile") MultipartFile file,
+            RedirectAttributes redirectAttributes) {
 
         // Manual validation logic
         validateUserInput(user.getFullName(), user.getPhone(), user.getAddress(), newUserBindingResult);
@@ -115,11 +123,10 @@ public class UserController {
         }
 
         UserUpdateDTO userUpdateDTO = new UserUpdateDTO(
-            currentUser.getId(),
-            currentUser.getFullName(),
-            currentUser.getAddress(),
-            currentUser.getPhone()
-        );
+                currentUser.getId(),
+                currentUser.getFullName(),
+                currentUser.getAddress(),
+                currentUser.getPhone());
 
         model.addAttribute("newUser", userUpdateDTO);
         model.addAttribute("userEmail", currentUser.getEmail()); // For display purposes
@@ -128,12 +135,13 @@ public class UserController {
 
     @PostMapping("/admin/user/update")
     public String postUpdateUser(Model model,
-                                @ModelAttribute("newUser") UserUpdateDTO userUpdateDTO,
-                                BindingResult bindingResult,
-                                RedirectAttributes redirectAttributes) {
+            @ModelAttribute("newUser") UserUpdateDTO userUpdateDTO,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
 
         // Manual validation logic for update
-        validateUserInput(userUpdateDTO.getFullName(), userUpdateDTO.getPhone(), userUpdateDTO.getAddress(), bindingResult);
+        validateUserInput(userUpdateDTO.getFullName(), userUpdateDTO.getPhone(), userUpdateDTO.getAddress(),
+                bindingResult);
 
         if (bindingResult.hasErrors()) {
             User currentUser = this.userService.getUserById(userUpdateDTO.getId());
@@ -160,16 +168,38 @@ public class UserController {
     }
 
     @GetMapping("/admin/user/delete/{id}")
-    public String getDeleteUserPage(Model model, @PathVariable long id) {
+    public String getDeleteUserPage(Model model, @PathVariable long id, RedirectAttributes redirectAttributes) {
+        // Lấy thông tin user hiện tại đang đăng nhập
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        User currentUser = userService.getUserByEmail(currentUserEmail);
+
+        // Kiểm tra nếu admin đang cố gắng xóa chính mình
+        if (currentUser != null && currentUser.getId() == id) {
+            redirectAttributes.addFlashAttribute("error", "Bạn không thể xóa chính tài khoản của mình!");
+            return "redirect:/admin/user";
+        }
+
         model.addAttribute("id", id);
-        //check coi user này có đơn hàng nào ko trc khi xóa nếu có thì không có xóa
+        // check coi user này có đơn hàng nào ko trc khi xóa nếu có thì không có xóa
         return "admin/user/delete";
     }
 
     @PostMapping("/admin/user/delete")
     public String postDeleteUser(RedirectAttributes box, @RequestParam("id") long id) {
+        // Lấy thông tin user hiện tại đang đăng nhập
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        User currentUser = userService.getUserByEmail(currentUserEmail);
+
+        // Kiểm tra nếu admin đang cố gắng xóa chính mình
+        if (currentUser != null && currentUser.getId() == id) {
+            box.addFlashAttribute("error", "Bạn không thể xóa chính tài khoản của mình!");
+            return "redirect:/admin/user";
+        }
+
         boolean isOrders = orderService.hasOrder(id);
-        if(isOrders) {
+        if (isOrders) {
             box.addFlashAttribute("error", "This user has orders in the System that cannot be deleted");
             return "redirect:/admin/user";
         }
