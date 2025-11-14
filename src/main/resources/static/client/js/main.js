@@ -388,7 +388,7 @@
         const productId = $(this).attr('data-product-id');
         const token = $("meta[name='_csrf']").attr("content");
         const header = $("meta[name='_csrf_header']").attr("content");
-        const quantity = $("#quantityInput").val();
+        const quantity = $("#cartDetails0\\.quantity").val();
         $.ajax({
             url: `${window.location.origin}/api/add-product-to-cart`,
             beforeSend: function (xhr) {

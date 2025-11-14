@@ -45,7 +45,7 @@ public class ItemController {
 
         this.productService.handleAddProductToCart(email, productId, session, 1);
 
-        return "redirect:/products";
+        return "redirect:/";
     }
 
     @GetMapping("/cart")
@@ -142,7 +142,6 @@ public class ItemController {
             @RequestParam("id") long id,
             @RequestParam("quantity") long quantity,
             HttpServletRequest request) {
-        System.out.println(">>> Quantity nhận được: " + quantity);
         HttpSession session = request.getSession(false);
 
         String email = (String) session.getAttribute("email");

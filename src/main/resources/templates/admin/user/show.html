@@ -4,10 +4,238 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Dashboard</title>
+    <title>Manage Users | Admin</title>
 
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <!-- Custom style riêng cho trang Manage Users -->
+    <style>
+        :root {
+            --primary-color: #81c408;
+            --primary-soft: rgba(129, 196, 8, 0.06);
+            --text-main: #202124;
+            --text-muted: #6b7280;
+            --border-soft: #e5e7eb;
+            --bg-page: #f5f7fb;
+        }
+
+        body.sb-nav-fixed {
+            background: var(--bg-page);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        /* Header trang + breadcrumb */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1.25rem;
+            font-size: 0.88rem;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--primary-color);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Card chứa table */
+        .card-list {
+            border-radius: 18px;
+            border: 1px solid var(--border-soft);
+            background: #ffffff;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .card-list-header {
+            padding: 1.1rem 1.25rem 0.8rem;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-list-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-list-title span {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: var(--primary-soft);
+            color: var(--primary-color);
+        }
+
+        .card-list-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Nút tạo user */
+        .btn-primary {
+            --bs-btn-bg: var(--primary-color);
+            --bs-btn-border-color: var(--primary-color);
+            --bs-btn-hover-bg: #6bad06;
+            --bs-btn-hover-border-color: #6bad06;
+            --bs-btn-focus-shadow-rgb: 129, 196, 8;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding-inline: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Table */
+        .table-wrapper {
+            padding: 0.9rem 1.25rem 1.1rem;
+        }
+
+        .table {
+            margin-bottom: 0.4rem;
+        }
+
+        .table thead {
+            background-color: #f9fafb;
+        }
+
+        .table thead th {
+            border-bottom-width: 1px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            border-color: var(--border-soft);
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+            border-color: var(--border-soft);
+        }
+
+        .badge-role {
+            font-size: 0.78rem;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: var(--primary-soft);
+            color: var(--primary-color);
+        }
+
+        /* Action buttons */
+        .btn-action {
+            font-size: 0.78rem;
+            padding: 4px 9px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .btn-outline-warning {
+            border-color: #fbbf24;
+            color: #d97706;
+        }
+
+        .btn-outline-warning:hover {
+            background-color: #facc15;
+            color: #78350f;
+        }
+
+        .btn-outline-danger {
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #ef4444;
+            color: #ffffff;
+        }
+
+        /* Pagination */
+        .pagination .page-link {
+            border-radius: 999px !important;
+            margin: 0 2px;
+            font-size: 0.85rem;
+            border-color: var(--border-soft);
+            color: var(--text-muted);
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #d1d5db;
+        }
+
+        @media (max-width: 767.98px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .card-list-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body class="sb-nav-fixed">
@@ -24,88 +252,129 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">Manage Users</h1>
+
+                <!-- Page header -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Manage Users</h1>
+                        <p class="page-subtitle">
+                            Quản lý tài khoản người dùng trong hệ thống Laptopshop.
+                        </p>
+                    </div>
+                </div>
 
                 <!-- Breadcrumb -->
                 <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/admin}">Dashboard</a>
+                    </li>
                     <li class="breadcrumb-item active">Users</li>
                 </ol>
 
-                <div class="mt-5">
+                <div class="mt-3 mb-4">
                     <div class="row">
                         <div class="col-12 mx-auto">
-                            <div class="d-flex justify-content-between">
-                                <h3>Table users</h3>
-                                <a th:href="@{/admin/user/create}" class="btn btn-primary">Create a user</a>
+
+                            <!-- Card danh sách user -->
+                            <div class="card-list">
+                                <div class="card-list-header">
+                                    <div class="card-list-title">
+                                        <span><i class="fas fa-users"></i></span>
+                                        <span>Danh sách người dùng</span>
+                                    </div>
+                                    <div class="card-list-actions">
+                                        <a th:href="@{/admin/user/create}" class="btn btn-primary">
+                                            <i class="fas fa-plus"></i>
+                                            <span>Tạo người dùng</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="table-wrapper">
+                                    <!-- Table -->
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead>
+                                            <tr>
+                                                <th style="width: 80px;">ID</th>
+                                                <th>Email</th>
+                                                <th>Full Name</th>
+                                                <th style="width: 130px;">Role</th>
+                                                <th style="width: 230px;">Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="user : ${users}">
+                                                <td th:text="${user.id}"></td>
+                                                <td th:text="${user.email}"></td>
+                                                <td th:text="${user.fullName}"></td>
+                                                <td>
+                                                    <span class="badge-role" th:text="${user.role.name}">ROLE</span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex flex-wrap gap-1">
+                                                        <a th:href="@{'/admin/user/' + ${user.id}}"
+                                                           class="btn btn-outline-primary btn-action">
+                                                            <i class="fas fa-eye"></i>
+                                                            View
+                                                        </a>
+                                                        <a th:href="@{'/admin/user/update/' + ${user.id}}"
+                                                           class="btn btn-outline-warning btn-action">
+                                                            <i class="fas fa-pen"></i>
+                                                            Edit
+                                                        </a>
+                                                        <a th:href="@{'/admin/user/delete/' + ${user.id}}"
+                                                           class="btn btn-outline-danger btn-action">
+                                                            <i class="fas fa-trash"></i>
+                                                            Delete
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Pagination -->
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination justify-content-center mt-3 mb-1">
+                                            <!-- Previous -->
+                                            <li class="page-item"
+                                                th:classappend="${currentPage == 1} ? ' disabled'">
+                                                <a class="page-link"
+                                                   th:href="@{|/admin/user?page=${currentPage - 1}&size=${size}&sort=${sort}&dir=${dir}|}">
+                                                    &laquo;
+                                                </a>
+                                            </li>
+
+                                            <!-- Page numbers -->
+                                            <li class="page-item"
+                                                th:each="i : ${#numbers.sequence(1, totalPages)}"
+                                                th:classappend="${i == currentPage} ? ' active'">
+                                                <a class="page-link"
+                                                   th:href="@{|/admin/user?page=${i}&size=${size}&sort=${sort}&dir=${dir}|}"
+                                                   th:text="${i}">
+                                                    1
+                                                </a>
+                                            </li>
+
+                                            <!-- Next -->
+                                            <li class="page-item"
+                                                th:classappend="${currentPage == totalPages} ? ' disabled'">
+                                                <a class="page-link"
+                                                   th:href="@{|/admin/user?page=${currentPage + 1}&size=${size}&sort=${sort}&dir=${dir}|}">
+                                                    &raquo;
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
                             </div>
-
-                            <hr/>
-                            <!-- Table -->
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Email</th>
-                                    <th>Full Name</th>
-                                    <th>Role</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="user : ${users}">
-                                    <td th:text="${user.id}"></td>
-                                    <td th:text="${user.email}"></td>
-                                    <td th:text="${user.fullName}"></td>
-                                    <td th:text="${user.role != null ? user.role.name : 'N/A'}"></td>
-                                    <td>
-                                        <a th:href="@{'/admin/user/' + ${user.id}}" class="btn btn-success">View</a>
-                                        <a th:href="@{'/admin/user/update/' + ${user.id}}" class="btn btn-warning mx-2">Update</a>
-                                        <!-- Ẩn nút Delete nếu đây là tài khoản hiện tại -->
-                                        <a th:if="${currentUser == null || user.id != currentUser.id}"
-                                           th:href="@{'/admin/user/delete/' + ${user.id}}"
-                                           class="btn btn-danger">Delete</a>
-                                        <span th:if="${currentUser != null && user.id == currentUser.id}"
-                                              class="btn btn-secondary disabled"
-                                              title="Không thể xóa chính tài khoản của mình">Delete</span>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                            <!-- Pagination -->
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination justify-content-center">
-                                    <!-- Previous -->
-                                    <li class="page-item" th:classappend="${currentPage == 1} ? ' disabled'">
-                                        <a class="page-link"
-                                           th:href="@{|/admin/user?page=${currentPage - 1}&size=${size}&sort=${sort}&dir=${dir}|}">
-                                            &laquo;
-                                        </a>
-                                    </li>
-
-                                    <!-- Page numbers -->
-                                    <li class="page-item"
-                                        th:each="i : ${#numbers.sequence(1, totalPages)}"
-                                        th:classappend="${i == currentPage} ? ' active'">
-                                        <a class="page-link"
-                                           th:href="@{|/admin/user?page=${i}&size=${size}&sort=${sort}&dir=${dir}|}"
-                                           th:text="${i}">1</a>
-                                    </li>
-
-                                    <!-- Next -->
-                                    <li class="page-item" th:classappend="${currentPage == totalPages} ? ' disabled'">
-                                        <a class="page-link"
-                                           th:href="@{|/admin/user?page=${currentPage + 1}&size=${size}&sort=${sort}&dir=${dir}|}">
-                                            &raquo;
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
 
                         </div>
                     </div>
                 </div>
+
             </div>
         </main>
 

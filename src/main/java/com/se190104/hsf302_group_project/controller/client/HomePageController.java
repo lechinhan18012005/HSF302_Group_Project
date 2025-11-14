@@ -72,7 +72,7 @@ public class HomePageController {
 
     @GetMapping("/login")
     public String getLoginPage(Model model) {
-        model.addAttribute("recaptchaSiteKey", "6Le8QAwsAAAAADuE23ZGxk_7PLtw8BQegR3JQSDU");
+
         return "client/auth/login";
     }
 
