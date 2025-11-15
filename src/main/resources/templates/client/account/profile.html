@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title>My Account | Member</title>
+
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --primary-color: #6bad06;
+            --primary-soft: rgba(107,173,6,.06);
+            --text-main: #202124;
+            --text-muted: #6b7280;
+            --border-soft: #e5e7eb;
+            --bg-page: #f5f7fb;
+        }
+
+        body {
+            background: var(--bg-page);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .account-wrapper {
+            max-width: 760px;
+            margin: 2.5rem auto;
+        }
+
+        .account-card {
+            border-radius: 18px;
+            border: 1px solid var(--border-soft);
+            background: #ffffff;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .account-card-header {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .account-title-main {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .account-title-main i {
+            color: var(--primary-color);
+        }
+
+        .account-title-sub {
+            font-size: 0.86rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .account-card-body {
+            padding: 1.3rem 1.4rem 1.6rem;
+        }
+
+        .avatar-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 1rem;
+        }
+
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 999px;
+            object-fit: cover;
+            border: 2px solid var(--border-soft);
+            background: #f9fafb;
+        }
+
+        .avatar-empty {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 999px;
+            border: 2px dashed var(--border-soft);
+            color: var(--text-muted);
+            background: #f9fafb;
+        }
+
+        .form-text-muted {
+            font-size: 0.86rem;
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.4rem;
+            border: none;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .18s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a9605;
+            box-shadow: 0 10px 24px rgba(107, 173, 6, 0.45);
+        }
+
+        .btn-secondary {
+            border-radius: 999px;
+            font-size: 0.9rem;
+            padding: 0.45rem 1.4rem;
+            border: 1px solid var(--border-soft);
+            background-color: #ffffff;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .18s ease;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+        }
+    </style>
+
+    <!-- Preview avatar -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script th:inline="javascript">
+        $(document).ready(() => {
+            const avatarInput = $("#avatarFile");
+            avatarInput.on("change", function (e) {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                const imgURL = URL.createObjectURL(file);
+                $("#avatarPreview").attr("src", imgURL).show();
+                $("#avatarPlaceholder").hide();
+            });
+        });
+    </script>
+</head>
+
+<body>
+<!-- Nếu bạn có header client riêng thì include vào đây -->
+<!-- <div th:replace="~{client/layout/header :: header}"></div> -->
+
+<div class="container">
+    <div class="account-wrapper">
+        <div class="account-card">
+            <div class="account-card-header">
+                <div>
+                    <div class="account-title-main">
+                        <i class="fas fa-user-circle"></i>
+                        <span>My account</span>
+                    </div>
+                    <div class="account-title-sub">
+                        Quản lý thông tin cá nhân và avatar tài khoản của bạn.
+                    </div>
+                </div>
+            </div>
+
+            <div class="account-card-body">
+                <!-- Thông báo thành công nếu có -->
+                <div th:if="${successMessage}" class="alert alert-success mb-3" th:text="${successMessage}"></div>
+
+                <form th:action="@{/member/account}"
+                      th:object="${profile}"
+                      method="post"
+                      enctype="multipart/form-data"
+                      class="row g-3">
+
+                    <!-- ID ẩn -->
+                    <input type="hidden" th:field="*{id}"/>
+
+                    <!-- Avatar -->
+                    <div class="col-12">
+                        <label class="form-label">Avatar</label>
+                        <div class="avatar-wrapper">
+                            <div>
+                                <img th:if="*{avatar} != null"
+                                     th:src="@{|/images/avatar/${profile.avatar}|}"
+                                     id="avatarPreview"
+                                     class="avatar-preview"
+                                     alt="Avatar"/>
+
+                                <div th:if="*{avatar} == null" id="avatarPlaceholder" class="avatar-empty">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <input class="form-control" type="file" id="avatarFile"
+                                       name="avatarFile" accept=".png,.jpg,.jpeg"/>
+                                <div class="form-text-muted mt-1">
+                                    Hỗ trợ định dạng: JPG, PNG. Kích thước đề xuất 200x200px.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email (readonly) -->
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email"
+                               class="form-control"
+                               th:field="*{email}"
+                               readonly/>
+                        <div class="form-text-muted">
+                            Email dùng để đăng nhập, không thể thay đổi.
+                        </div>
+                    </div>
+
+                    <!-- Full name -->
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Full name</label>
+                        <input type="text"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('fullName')} ? ' is-invalid'"
+                               th:field="*{fullName}"/>
+                        <div class="invalid-feedback" th:errors="*{fullName}"></div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Phone</label>
+                        <input type="text"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('phone')} ? ' is-invalid'"
+                               th:field="*{phone}"/>
+                        <div class="invalid-feedback" th:errors="*{phone}"></div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Address</label>
+                        <input type="text"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('address')} ? ' is-invalid'"
+                               th:field="*{address}"/>
+                        <div class="invalid-feedback" th:errors="*{address}"></div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="col-12 mt-2 d-flex gap-2">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i>
+                            <span>Save changes</span>
+                        </button>
+
+                        <a th:href="@{/}" class="btn-secondary">
+                            <i class="fas fa-home"></i>
+                            <span>Back to home</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Nếu có footer client -->
+<!-- <div th:replace="~{client/layout/footer :: footer}"></div> -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+</body>
+</html>

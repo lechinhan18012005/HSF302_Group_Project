@@ -50,16 +50,15 @@
                             <ul class="dropdown-menu dropdown-menu-end p-4">
 
                                 <li class="d-flex align-items-center flex-column" style="min-width: 300px;">
-                                    <img th:src="@{${session.avatar != null
-                                        ? '/images/avatar/' + session.avatar
-                                        : '/images/default-avatar.png'}}"
-                                         style="width: 150px; height: 150px; border-radius: 50%;" alt="Avatar"/>
+                                    <img th:src="'/images/avatar/' + ${session.avatar}"
+                                         style="width:150px;height:150px;border-radius:50%;object-fit:cover"
+                                         alt="Avatar">
 
                                     <div class="text-center my-3 fw-bold"
                                          th:text="${session.fullName}"></div>
                                 </li>
 
-                                <li><a class="dropdown-item" href="#">Quản lý tài khoản</a></li>
+                                <li><a class="dropdown-item" th:href="@{member/account}">Quản lý tài khoản</a></li>
                                 <li><a class="dropdown-item" th:href="@{/order-history}">Lịch sử mua hàng</a></li>
 
                                 <li><hr class="dropdown-divider"></li>
