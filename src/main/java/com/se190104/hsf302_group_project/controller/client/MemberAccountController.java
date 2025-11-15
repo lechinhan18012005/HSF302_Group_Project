@@ -3,6 +3,7 @@ package com.se190104.hsf302_group_project.controller.client;
 import com.se190104.hsf302_group_project.domain.User;
 import com.se190104.hsf302_group_project.domain.dto.MemberAccountDto;
 import com.se190104.hsf302_group_project.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -50,7 +51,8 @@ public class MemberAccountController {
                                 MultipartFile avatarFile,
                                 Principal principal,
                                 Model model,
-                                RedirectAttributes redirectAttributes) {
+                                RedirectAttributes redirectAttributes,
+                                HttpSession session) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("org.springframework.validation.BindingResult.profile", bindingResult);
@@ -59,7 +61,7 @@ public class MemberAccountController {
         }
 
         // Gọi service update thông tin + avatar
-        userService.updateMemberProfile(principal.getName(), profile, avatarFile);
+        userService.updateMemberProfile(principal.getName(), profile, avatarFile, session);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật tài khoản thành công");
         return "redirect:/";
     }

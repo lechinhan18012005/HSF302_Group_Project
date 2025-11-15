@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.se190104.hsf302_group_project.domain.dto.MemberAccountDto;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -96,7 +97,8 @@ public class UserService {
     @Transactional
     public void updateMemberProfile(String email,
                                     MemberAccountDto profile,
-                                    MultipartFile avatarFile) {
+                                    MultipartFile avatarFile,
+                                    HttpSession session) {
 
         User user = userRepository.findByEmail(email);
 
@@ -109,6 +111,7 @@ public class UserService {
         if (avatarFile != null && !avatarFile.isEmpty()) {
             String avatar = uploadService.handleSaveUploadFile(avatarFile, "avatar");
             user.setAvatar(avatar);
+            session.setAttribute("avatar", avatar);
         }
         userRepository.save(user);
     }

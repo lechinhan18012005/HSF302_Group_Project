@@ -14,6 +14,14 @@ import java.io.IOException;
 public class UploadService {
     private final ServletContext servletContext;
 
+
+    private String getFileExtension(String fileName) {
+        if (fileName == null) return "jpg";
+        int lastIndex = fileName.lastIndexOf('.');
+        if (lastIndex == -1) return "jpg";
+        return fileName.substring(lastIndex + 1).toLowerCase();
+    }
+
     public UploadService(
             ServletContext servletContext) {
 
@@ -25,7 +33,7 @@ public class UploadService {
         if (file.isEmpty())
             return "";
         // relative path: absolute path
-        String rootPath = this.servletContext.getRealPath("/resources/static/images");
+        String rootPath = this.servletContext.getRealPath("/images");
         String finalName = "";
         try {
             byte[] bytes = file.getBytes();
@@ -43,7 +51,7 @@ public class UploadService {
             Thumbnails.of(file.getInputStream())
                     .size(500, 350)     // ép về đúng 500x350
                     .keepAspectRatio(false) // bắt buộc đúng tỷ lệ, không giữ tỉ lệ gốc
-                    .outputFormat("jpg")    // tùy chọn, có thể dùng "png"
+                    .outputFormat(getFileExtension(file.getOriginalFilename()))    // tùy chọn, có thể dùng "png"
                     .toFile(serverFile);
         } catch (IOException e) {
             // TODO Auto-generated catch block
